@@ -1,11 +1,11 @@
 package co.edu.unbosque.model.base;
 
-public class Node<T> {
+public class Nodo<T> {
 
 	private T data;
-	private Node<T> next;
+	private Nodo<T> next;
 	
-	public Node(T data) {
+	public Nodo(T data) {
 		this.data = data;
 		this.next = null;
 	}
@@ -18,11 +18,11 @@ public class Node<T> {
 		this.data = data;
 	}
 	
-	public void setNext(Node<T> next) {
+	public void setNext(Nodo<T> next) {
 		this.next = next;
 	}
 	
-	public Node<T> getNext() {
+	public Nodo<T> getNext() {
 		return next;
 	}
 	

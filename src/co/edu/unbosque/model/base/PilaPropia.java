@@ -1,23 +1,23 @@
 package co.edu.unbosque.model.base;
 
-public class Stack<T> {
+public class PilaPropia<T> {
 	
-	private Node<T> top;
+	private Nodo<T> top;
 	
-	public Stack() {}
+	public PilaPropia() {}
 	
 	public T peek() {
 		return top.getData();
 	}
 	
 	public void push(T data) {
-		Node<T> n = new Node<T>(data);
+		Nodo<T> n = new Nodo<T>(data);
 		n.setNext(top);
 		top = n;
 	}
 	
 	public void pop() {
-		Node<T> aux = top;
+		Nodo<T> aux = top;
 		top = top.getNext();
 		aux.setNext(null);
 	}

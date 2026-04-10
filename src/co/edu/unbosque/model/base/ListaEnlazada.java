@@ -1,36 +1,36 @@
 package co.edu.unbosque.model.base;
 
-public class SimpleLinkedList<T> {
+public class ListaEnlazada<T> {
 	
-	private Node<T> head;
+	private Nodo<T> cabeza;
 	
 	//add ----------------------------------------------------------------------
 	
 	public void add(T data) {
-		if (head == null) {
-			head = new Node<T>(data);
-		} else if (!head.hasNext())  {
-			head.setNext(new Node<T>(data));
+		if (cabeza == null) {
+			cabeza = new Nodo<T>(data);
+		} else if (!cabeza.hasNext())  {
+			cabeza.setNext(new Nodo<T>(data));
 		} else {
-			addElement(head, data);
+			addElement(cabeza, data);
 		}
 	}
 	
-	private void addElement(Node<T> node, T data) {
+	private void addElement(Nodo<T> node, T data) {
 		if (!node.hasNext()) {
-			node.setNext(new Node<T>(data));
+			node.setNext(new Nodo<T>(data));
 		} else {
 			addElement(node.getNext(), data);
 		}
 	}
 	
 	public void addAtFirst(T data) {
-		if (head == null) {
-			head = new Node<T>(data);
+		if (cabeza == null) {
+			cabeza = new Nodo<T>(data);
 		} else  {
-			Node<T> aux = new Node<T>(data);
-			aux.setNext(head);
-			head = aux;
+			Nodo<T> aux = new Nodo<T>(data);
+			aux.setNext(cabeza);
+			cabeza = aux;
 		}
 	}
 	
@@ -38,15 +38,15 @@ public class SimpleLinkedList<T> {
 		if (pos == 0) {
 			addAtFirst(data);
 		} else if (pos > 0) {
-			if (head != null) {
-				addElementByPos(head, data, pos, 0);	
+			if (cabeza != null) {
+				addElementByPos(cabeza, data, pos, 0);	
 			}
 		}
 	}
 	
-	private void addElementByPos(Node<T> node, T data, int posToInsert, int currentPos) {
+	private void addElementByPos(Nodo<T> node, T data, int posToInsert, int currentPos) {
 		if (currentPos == (posToInsert - 1) || !node.hasNext()) {
-			Node<T> created = new Node<T>(data);
+			Nodo<T> created = new Nodo<T>(data);
 			created.setNext(node.getNext());
 			node.setNext(created);
 		} else if (node.hasNext()) {
@@ -58,7 +58,7 @@ public class SimpleLinkedList<T> {
 	
 	public T getValueByPos(int pos) {
 		if (pos >= 0) {
-			Node<T> node = getElementByPos(head, pos, 0);
+			Nodo<T> node = getElementByPos(cabeza, pos, 0);
 			if (node != null) {
 				return node.getData();
 			}
@@ -67,7 +67,7 @@ public class SimpleLinkedList<T> {
 		return null;
 	}
 	
-	private Node<T> getElementByPos(Node<T> node, int posToSearch, int currentPos) {
+	private Nodo<T> getElementByPos(Nodo<T> node, int posToSearch, int currentPos) {
 		if (node == null) {
 			return null;
 		} else if (currentPos == (posToSearch)) {
@@ -81,7 +81,7 @@ public class SimpleLinkedList<T> {
 	
 	public void updateDataByPos(int pos, T data) {
 		if (pos >= 0) {
-			Node<T> node = getElementByPos(head, pos, 0);
+			Nodo<T> node = getElementByPos(cabeza, pos, 0);
 			if (node != null) {
 				node.setData(data);
 			}
@@ -92,19 +92,19 @@ public class SimpleLinkedList<T> {
 	
 	public void remove(int posToDelete) {
 		if (posToDelete == 0) {
-			if (head != null) {
-				head = head.getNext();
+			if (cabeza != null) {
+				cabeza = cabeza.getNext();
 			}
-		} else if (head != null && head.hasNext()) {
-			removeElement(posToDelete, 1, head);
+		} else if (cabeza != null && cabeza.hasNext()) {
+			removeElement(posToDelete, 1, cabeza);
 		}
 	}
 	
-	private void removeElement(int posToDelete, int currentPos, Node<T> node) {
+	private void removeElement(int posToDelete, int currentPos, Nodo<T> node) {
 		if (currentPos == posToDelete) {
 			if (node.hasNext()) {
 				 if (node.getNext().hasNext()) {
-						Node<T> aux = node.getNext().getNext();
+						Nodo<T> aux = node.getNext().getNext();
 						node.getNext().setNext(null);
 						node.setNext(aux);
 						
@@ -120,10 +120,10 @@ public class SimpleLinkedList<T> {
 	//count elements ---------------------------------------------------------------
 	
 	public int count() {
-		return countImpl(head);
+		return countImpl(cabeza);
 	}
 	
-	public int countImpl(Node<T> node) {
+	public int countImpl(Nodo<T> node) {
 		if (node == null) {
 			return 0;
 		} else {

@@ -1,11 +1,11 @@
 package co.edu.unbosque.main;
 
-import co.edu.unbosque.controller.MainController;
+import co.edu.unbosque.controller.ServicioControlador;
 
 public class Main {
 
 	public static void main(String[] args) {
-		MainController ctrl = new MainController();
+		ServicioControlador ctrl = new ServicioControlador();
 		ctrl.init();
 	}
 
