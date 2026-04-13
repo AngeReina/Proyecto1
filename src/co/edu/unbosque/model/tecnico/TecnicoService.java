@@ -60,4 +60,28 @@ public class TecnicoService {
 	public boolean eliminarTecnico(int id) {
 		return tecnicoDAO.delete(id);
 	}
+	public Tecnico asignarTecnicoLibre(String especialidad) {
+		ListaEnlazada<Tecnico> lista = tecnicoDAO.buscarPorEspecialidad(especialidad);
+
+		for (int i = 0; i < lista.count(); i++) {
+			Tecnico t = lista.getValueByPos(i);
+
+			if (t != null && t.getEstado() == EstadoTecnico.DISPONIBLE) {
+				t.setEstado(EstadoTecnico.ASIGNADO);
+				tecnicoDAO.update(t);
+				return t;
+			}
+		}
+
+		return null;
+	}
+	public boolean validarDisponibilidad(int id) {
+		Tecnico tecnico = tecnicoDAO.read(id);
+
+		if (tecnico == null) {
+			return false;
+		}
+
+		return tecnico.getEstado() == EstadoTecnico.DISPONIBLE;
+	}
 }
