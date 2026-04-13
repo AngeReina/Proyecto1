@@ -57,9 +57,6 @@ public class TecnicoService {
 		return tecnicoDAO.update(tecnico);
 	}
 
-	public boolean eliminarTecnico(int id) {
-		return tecnicoDAO.delete(id);
-	}
 	public Tecnico asignarTecnicoLibre(String especialidad) {
 		ListaEnlazada<Tecnico> lista = tecnicoDAO.buscarPorEspecialidad(especialidad);
 

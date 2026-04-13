@@ -99,11 +99,4 @@ public class ServicioControlador {
 			return false;
 		}
 	}
-	
-	public boolean eliminarTecnico(int id) {
-		if (id <= 0) {
-			return false;
-		}
-		return tecnicoService.eliminarTecnico(id);
-	}
 }
