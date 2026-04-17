@@ -1,8 +1,9 @@
-package co.edu.unbosque.model.base.unidad;
+package co.edu.unbosque.model.unidad;
 
 import java.util.UUID;
-import co.edu.unbosque.model.base.TIPO_VEHICULO;
-import co.edu.unbosque.model.base.ESTADO_UNIDAD;
+
+import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
+import co.edu.unbosque.model.enums.TIPO_VEHICULO;
 
 public class UnidadDTO {
 

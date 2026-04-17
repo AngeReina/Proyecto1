@@ -99,4 +99,8 @@ public class ServicioControlador {
 			return false;
 		}
 	}
+	
+	// =========================  METODOS DE SOLICITUD =========================
+	
+	// =========================  METODOS DE REPORTES =========================
 }

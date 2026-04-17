@@ -1,12 +1,10 @@
-package co.edu.unbosque.controller;
+package co.edu.unbosque.model.unidad;
 
 import java.util.UUID;
 
-import co.edu.unbosque.model.base.unidad.Unidad;
-import co.edu.unbosque.model.base.unidad.UnidadDAO;
-import co.edu.unbosque.model.base.unidad.UnidadDTO;
-import co.edu.unbosque.model.base.TIPO_VEHICULO;
-import co.edu.unbosque.model.base.ESTADO_UNIDAD;
+import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
+import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.persistence.UnidadDAO;
 
 public class UnidadServicio {
 
