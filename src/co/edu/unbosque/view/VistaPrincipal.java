@@ -1,11 +1,55 @@
 package co.edu.unbosque.view;
 
-public class VistaPrincipal {
-	
-	private IComandosVista cmdListener;
-	
-	public VistaPrincipal(IComandosVista viewCmdListener) {
-		this.cmdListener = viewCmdListener;
-	}
+import javax.swing.*;
+import java.awt.*;
 
+import co.edu.unbosque.utils.Constantes;
+
+public class VistaPrincipal extends JFrame {
+
+    private IComandosVista cmdListener;
+
+    private JButton btnUnidad;
+    private DialogoUnidad dialogoUnidad;
+
+    public VistaPrincipal(IComandosVista viewCmdListener) {
+        this.cmdListener = viewCmdListener;
+
+        setTitle("Sistema");
+        setSize(400, 200);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new FlowLayout());
+
+        initComponents();
+        addComponents();
+        setVisible(true);
+    }
+
+    private void initComponents() {
+        btnUnidad = new JButton("Gestionar Unidad");
+        btnUnidad.setActionCommand(Constantes.BTN_ABRIR_DIALOGO_UNIDAD);
+
+        dialogoUnidad = new DialogoUnidad();
+        dialogoUnidad.setListener(e -> cmdListener.ejecutarComando(e.getActionCommand()));
+    }
+
+    private void addComponents() {
+        add(btnUnidad);
+
+        // Listener del botón principal
+        btnUnidad.addActionListener(e -> 
+            cmdListener.ejecutarComando(e.getActionCommand())
+        );
+    }
+
+    // ---- MÉTODO PARA ABRIR ----
+    public void abrirDialogoUnidad() {
+        dialogoUnidad.setVisible(true);
+    }
+
+    // ---- GETTERS DEL DIALOGO ----
+    public DialogoUnidad getDialogoUnidad() {
+        return dialogoUnidad;
+    }
 }
