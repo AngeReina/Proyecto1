@@ -3,8 +3,8 @@ package co.edu.unbosque.view;
 import javax.swing.*;
 import java.awt.*;
 
-import co.edu.unbosque.model.base.TIPO_VEHICULO;
-import co.edu.unbosque.model.base.ESTADO_UNIDAD;
+import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 
 public class PanelDatosUnidad extends JPanel {
 

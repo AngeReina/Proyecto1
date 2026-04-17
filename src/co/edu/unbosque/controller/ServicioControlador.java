@@ -6,10 +6,12 @@ import co.edu.unbosque.model.enums.EstadoTecnico;
 import co.edu.unbosque.model.tecnico.TecnicoService;
 import co.edu.unbosque.view.IComandosVista;
 import co.edu.unbosque.view.VistaConsola;
+import co.edu.unbosque.view.VistaPrincipal;
 import co.edu.unbosque.utils.Constantes;
-import co.edu.unbosque.model.base.TIPO_VEHICULO;
-import co.edu.unbosque.model.base.ESTADO_UNIDAD;
-import co.edu.unbosque.model.base.unidad.UnidadDTO;
+import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
+import co.edu.unbosque.model.unidad.UnidadDTO;
+import co.edu.unbosque.model.unidad.UnidadServicio;
 
 
 public class ServicioControlador {
@@ -70,7 +72,7 @@ public class ServicioControlador {
 
 	public ServicioControlador() {
         unidadServicio = new UnidadServicio();
-        vista = new VistaPrincipal(this);
+        vista = new VistaPrincipal(viewCmdListener);
         this.consoleView = new VistaConsola();
 		this.tecnicoService = new TecnicoService();
 	}
