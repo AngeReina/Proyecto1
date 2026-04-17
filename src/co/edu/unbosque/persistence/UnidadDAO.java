@@ -1,6 +1,7 @@
-package co.edu.unbosque.model.base.unidad;
+package co.edu.unbosque.persistence;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.unidad.Unidad;
 
 public class UnidadDAO {
 
