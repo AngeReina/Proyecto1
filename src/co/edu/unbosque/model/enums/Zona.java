@@ -1,6 +1,6 @@
 package co.edu.unbosque.model.enums;
 
-public enum ZonaTecnico {
+public enum Zona {
 	SUR,
 	NORTE,
 	ESTE,
