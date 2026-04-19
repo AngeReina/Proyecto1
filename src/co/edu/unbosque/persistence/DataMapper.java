@@ -1,13 +1,16 @@
 package co.edu.unbosque.persistence;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.cliente.Cliente;
 import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.enums.TIPO_VEHICULO;
 import co.edu.unbosque.model.enums.TIPO_CLIENTE;
 import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
+import co.edu.unbosque.model.unidad.Unidad;
 
 public class DataMapper {
 
@@ -82,9 +85,47 @@ public class DataMapper {
 
         return dtoList;
     }
-    
+
+
+	}
+
+	public String unidadToLine(Unidad unidad) {
+		if (unidad == null) {
+			return null;
+		}
+
+		return unidad.getId() + ";" +
+			unidad.getTipo().name() + ";" +
+			unidad.getEstado().name() + ";" +
+			unidad.getZona();
+	}
+
+	public Unidad lineToUnidad(String line) {
+		if (line == null || line.trim().isEmpty()) {
+			return null;
+		}
+
+		String[] parts = line.split(";");
+
+		if (parts.length != 4) {
+			return null;
+		}
+
+		try {
+			java.util.UUID id = java.util.UUID.fromString(parts[0]);
+			TIPO_VEHICULO tipo = TIPO_VEHICULO.valueOf(parts[1]);
+			ESTADO_UNIDAD estado = ESTADO_UNIDAD.valueOf(parts[2]);
+			String zona = parts[3];
+
+			return new Unidad(id, tipo, estado, zona);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+
     //CLIENTE ----------------------------------------------------------------------------------------------------------------
-    
+
 	public String clienteToLine(Cliente cliente) {
 		if (cliente == null) {
 			return null;
@@ -151,10 +192,10 @@ public class DataMapper {
 
         return dtoList;
     }
-    
-    
+
+
     //SOLICITUD ---------------------------------------------------------------------------------------------------------------
-    
+
 	public String solicitudDtoToLine(SolicitudDTO dto) {
 		if (dto == null) {
 			return null;

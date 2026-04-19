@@ -21,6 +21,7 @@ public class ServicioControlador {
     private UnidadServicio unidadServicio;
     private VistaConsola consoleView;
 	private TecnicoService tecnicoService;
+	private UnidadDTO ultimaUnidad;
 	private ClienteService clienteService;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
@@ -187,13 +188,13 @@ public class ServicioControlador {
                 case Constantes.BTN_TECNICO_CERRAR:
                     vista.getDialogoTecnico().setVisible(false);
                     break;
-                    
+
 
                 case Constantes.BTN_ABRIR_DIALOGO_CLIENTE: {
                     vista.abrirDialogoCliente();
                     break;
                 }
-                    
+
                 case Constantes.BTN_CLIENTE_REGISTRAR: {
                     ClienteDTO clienteDto = new ClienteDTO(
                             vista.getDialogoCliente().getId(),
@@ -282,9 +283,9 @@ public class ServicioControlador {
 	public boolean actualizarTecnico(TecnicoDTO dto) {
 	    return tecnicoService.actualizarTecnicoDTO(dto);
 	}
-	
+
 	// =========================  METODOS DE CLIENTES =========================
-	
+
 	public boolean registrarCliente(ClienteDTO dto) {
 	    return clienteService.registrarCliente(dto);
 	}
