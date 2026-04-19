@@ -15,19 +15,25 @@ public class TecnicoService {
 		mapper = new DataMapper();
 	}
 
+
 	public boolean registrarTecnico(Tecnico tecnico) {
-		if (tecnico == null) {
-			return false;
-		}
+	    if (tecnico == null) {
+	        return false;
+	    }
 
-		if (tecnico.getEstado() == null) {
-			tecnico.setEstado(EstadoTecnico.DISPONIBLE);
-		}
+	    if (tecnicoDAO.read(tecnico.getId()) != null) {
+	        return false; 
+	    }
 
-		return tecnicoDAO.create(tecnico);
+	    if (tecnico.getEstado() == null) {
+	        tecnico.setEstado(EstadoTecnico.DISPONIBLE);
+	    }
+
+	    return tecnicoDAO.create(tecnico);
 	}
 
 	public Tecnico buscarTecnico(int id) {
+		if (id <= 0) return null;
 		return tecnicoDAO.read(id);
 	}
 
@@ -36,18 +42,29 @@ public class TecnicoService {
 	}
 
 	public ListaEnlazada<Tecnico> buscarPorZona(String zona) {
-		return tecnicoDAO.buscarPorZona(zona);
+		if (zona == null || zona.trim().isEmpty()) return null;
+
+		ListaEnlazada<Tecnico> lista = tecnicoDAO.buscarPorZona(zona);
+		return (lista != null && lista.count() > 0) ? lista : null;
 	}
 
 	public ListaEnlazada<Tecnico> buscarPorEspecialidad(String especialidad) {
-		return tecnicoDAO.buscarPorEspecialidad(especialidad);
+		if (especialidad == null || especialidad.trim().isEmpty()) return null;
+
+		ListaEnlazada<Tecnico> lista = tecnicoDAO.buscarPorEspecialidad(especialidad);
+		return (lista != null && lista.count() > 0) ? lista : null;
 	}
 
 	public Tecnico buscarDisponible(String zona) {
-		return tecnicoDAO.buscarDisponiblePorZona(zona);
+		if (zona == null || zona.trim().isEmpty()) return null;
+
+		Tecnico t = tecnicoDAO.buscarDisponiblePorZona(zona);
+		return t;
 	}
 
 	public boolean cambiarEstado(int id, String estado) {
+		if (id <= 0 || estado == null || estado.trim().isEmpty()) return false;
+
 		try {
 			EstadoTecnico nuevoEstado = EstadoTecnico.valueOf(estado.toUpperCase());
 			return tecnicoDAO.cambiarEstado(id, nuevoEstado);
@@ -57,11 +74,16 @@ public class TecnicoService {
 	}
 
 	public boolean actualizarTecnico(Tecnico tecnico) {
+		if (tecnico == null) return false;
 		return tecnicoDAO.update(tecnico);
 	}
 
 	public Tecnico asignarTecnicoLibre(String especialidad) {
+		if (especialidad == null || especialidad.trim().isEmpty()) return null;
+
 		ListaEnlazada<Tecnico> lista = tecnicoDAO.buscarPorEspecialidad(especialidad);
+
+		if (lista == null || lista.count() == 0) return null;
 
 		for (int i = 0; i < lista.count(); i++) {
 			Tecnico t = lista.getValueByPos(i);
@@ -77,13 +99,10 @@ public class TecnicoService {
 	}
 
 	public boolean validarDisponibilidad(int id) {
+		if (id <= 0) return false;
+
 		Tecnico tecnico = tecnicoDAO.read(id);
-
-		if (tecnico == null) {
-			return false;
-		}
-
-		return tecnico.getEstado() == EstadoTecnico.DISPONIBLE;
+		return tecnico != null && tecnico.getEstado() == EstadoTecnico.DISPONIBLE;
 	}
 
 
@@ -101,29 +120,28 @@ public class TecnicoService {
 	public TecnicoDTO buscarTecnicoDTO(int id) {
 		if (id <= 0) return null;
 
-		return mapper.toTecnicoDTO(buscarTecnico(id));
+		Tecnico t = buscarTecnico(id);
+		return mapper.toTecnicoDTO(t);
 	}
 
 	public ListaEnlazada<TecnicoDTO> listarTecnicosDTO() {
-		return mapper.toTecnicoDTOList(listarTecnicos());
+		ListaEnlazada<Tecnico> lista = listarTecnicos();
+		return (lista != null) ? mapper.toTecnicoDTOList(lista) : null;
 	}
 
 	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorZonaDTO(String zona) {
-		if (zona == null || zona.trim().isEmpty()) return null;
-
-		return mapper.toTecnicoDTOList(buscarPorZona(zona));
+		ListaEnlazada<Tecnico> lista = buscarPorZona(zona);
+		return (lista != null) ? mapper.toTecnicoDTOList(lista) : null;
 	}
 
 	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorEspecialidadDTO(String especialidad) {
-		if (especialidad == null || especialidad.trim().isEmpty()) return null;
-
-		return mapper.toTecnicoDTOList(buscarPorEspecialidad(especialidad));
+		ListaEnlazada<Tecnico> lista = buscarPorEspecialidad(especialidad);
+		return (lista != null) ? mapper.toTecnicoDTOList(lista) : null;
 	}
 
 	public TecnicoDTO buscarTecnicoDisponibleDTO(String zona) {
-		if (zona == null || zona.trim().isEmpty()) return null;
-
-		return mapper.toTecnicoDTO(buscarDisponible(zona));
+		Tecnico t = buscarDisponible(zona);
+		return mapper.toTecnicoDTO(t);
 	}
 
 	public boolean actualizarTecnicoDTO(TecnicoDTO dto) {
@@ -137,9 +155,9 @@ public class TecnicoService {
 		}
 	}
 
-
 	private boolean validarDTO(TecnicoDTO dto) {
-		return !(dto == null || dto.getId() <= 0 ||
+		return !(dto == null ||
+				dto.getId() <= 0 ||
 				dto.getNombre() == null || dto.getNombre().trim().isEmpty() ||
 				dto.getEspecialidad() == null || dto.getEspecialidad().trim().isEmpty() ||
 				dto.getEstado() == null || dto.getEstado().trim().isEmpty() ||
