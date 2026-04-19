@@ -330,7 +330,12 @@ public class ServicioControlador {
                     break;
                 }
                 case Constantes.BTN_KITS_REVISAR: {
-                	revisarKit();
+                	String name = revisarKit();
+                	if (name != null) {
+                		vista.getDialogoSolicitud().mostrarMensaje("Kit listo para usarse nombre : " + name );	
+                	} else {
+                		vista.getDialogoSolicitud().mostrarMensaje("No hay kit para revisar");	
+                	}
                     break;
                 }
                 case Constantes.BTN_KIT_LIMPIAR: {
@@ -361,6 +366,7 @@ public class ServicioControlador {
                     	solicitudDTO.setCriterioCriticidad(vista.getDialogoSolicitud().getTipo());
                     	
                     	solicitudServicio.registrarSolicitud(solicitudDTO);	
+                    	vista.getDialogoSolicitud().mostrarMensaje("Solicitud Registrada");
                 	} else {
                 		vista.getDialogoSolicitud().mostrarMensaje("No existe usuario para solicitud");
                 	}
@@ -369,28 +375,32 @@ public class ServicioControlador {
                 }
                 
                 case Constantes.BTN_SOLICITUD_ASIGNAR: {                
-                	SolicitudDTO solicitudAsignable = solicitudServicio.obtenerProximaAtencion();                
+                	SolicitudDTO solicitudAsignable = solicitudServicio.obtenerProximaAtencion();    
                 	
-                	if (solicitudAsignable != null) {
-                    	UnidadDTO unidadDisponible = unidadServicio.buscarDisponible(solicitudAsignable.getUbicacion());
-                    	TecnicoDTO tecnicoDisponible = tecnicoService.buscarTecnicoDisponibleDTO(solicitudAsignable.getUbicacion());
-                    	
-                    	if (unidadDisponible == null) {
-                    		vista.getDialogoSolicitud().mostrarMensaje("No hay unidades de atencion disponibles en la zona");
-                    	}
-                    	else if (tecnicoDisponible == null) {
-                    		vista.getDialogoSolicitud().mostrarMensaje("No hay tecnicos disponibles en la zona");
-                    	} else if (kitService.existeKitDisponible()) {
-                        	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
-                        	kitEnUso = kitService.retirarKit();
-                    		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	if (solicitudActual == null) {
+                    	if (solicitudAsignable != null) {
+                        	UnidadDTO unidadDisponible = unidadServicio.buscarDisponible(solicitudAsignable.getUbicacion());
+                        	TecnicoDTO tecnicoDisponible = tecnicoService.buscarTecnicoDisponibleDTO(solicitudAsignable.getUbicacion());
+                        	
+                        	if (unidadDisponible == null) {
+                        		vista.getDialogoSolicitud().mostrarMensaje("No hay unidades de atencion disponibles en la zona");
+                        	} else if (tecnicoDisponible == null) {
+                        		vista.getDialogoSolicitud().mostrarMensaje("No hay tecnicos disponibles en la zona");
+                        	} else if (kitService.existeKitDisponible()) {
+                            	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
+                            	kitEnUso = kitService.retirarKit();
+                        		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                        	} else {
+                        		vista.getDialogoSolicitud().mostrarMensaje("No hay kits disponibles");
+                        	}
+                        	
                     	} else {
-                    		vista.getDialogoSolicitud().mostrarMensaje("No hay kits disponibles");
+                    		vista.getDialogoSolicitud().mostrarMensaje("No hay solicitudes pendientes");
                     	}
-                    	
                 	} else {
-                		vista.getDialogoSolicitud().mostrarMensaje("No hay solicitudes pendientes");
+                		vista.getDialogoSolicitud().mostrarMensaje("Ya hay una solicitud en proceso");
                 	}
+                
                 	
                     break;
                 }
@@ -398,6 +408,7 @@ public class ServicioControlador {
                 case Constantes.BTN_SOLICITUD_COMPLETAR: {                
                 	solicitudServicio.marcarComoAtendida(solicitudActual); 
                 	kitService.devolverKit(kitEnUso);
+                	solicitudActual = null;
                 	vista.getDialogoSolicitud().mostrarMensaje("Solicitud completada");
                 	
                     break;
@@ -488,7 +499,7 @@ public class ServicioControlador {
 	    return kitService.devolverKit(dto);
 	}
 	
-	public boolean revisarKit() {
+	public String revisarKit() {
 	    return kitService.revisarKit();
 	}
 	
