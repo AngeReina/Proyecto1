@@ -19,6 +19,7 @@ public class ServicioControlador {
     private UnidadServicio unidadServicio;
     private VistaConsola consoleView;
 	private TecnicoService tecnicoService;
+	private UnidadDTO ultimaUnidad;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 

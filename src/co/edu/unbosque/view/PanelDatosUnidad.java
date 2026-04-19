@@ -12,12 +12,13 @@ public class PanelDatosUnidad extends JPanel {
     private JLabel lblEstado;
     private JLabel lblZona;
 
+
     private JComboBox<TIPO_VEHICULO> comboTipo;
     private JComboBox<ESTADO_UNIDAD> comboEstado;
     private JTextField txtZona;
 
     public PanelDatosUnidad() {
-        setLayout(new GridLayout(3, 2, 10, 10));
+        setLayout(new GridLayout(4, 2, 10, 10));
         setBorder(BorderFactory.createTitledBorder("Datos de la Unidad"));
 
         initComponents();
@@ -28,6 +29,7 @@ public class PanelDatosUnidad extends JPanel {
         lblTipo = new JLabel("Tipo:");
         lblEstado = new JLabel("Estado:");
         lblZona = new JLabel("Zona:");
+
 
         comboTipo = new JComboBox<>(TIPO_VEHICULO.values());
         comboEstado = new JComboBox<>(ESTADO_UNIDAD.values());
@@ -43,6 +45,7 @@ public class PanelDatosUnidad extends JPanel {
 
         add(lblZona);
         add(txtZona);
+
     }
 
     // ---- GETTERS ----
@@ -58,6 +61,7 @@ public class PanelDatosUnidad extends JPanel {
     public String getZona() {
         return txtZona.getText().trim();
     }
+
 
     // ---- LIMPIAR ----
 

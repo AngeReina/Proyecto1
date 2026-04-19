@@ -11,14 +11,12 @@ public class UnidadDTO {
     private TIPO_VEHICULO tipo;
     private ESTADO_UNIDAD estado;
     private String zona;
-    private boolean disponible;
 
     public UnidadDTO(Unidad u) {
         this.id = u.getId();
         this.tipo = u.getTipo();
         this.estado = u.getEstado();
         this.zona = u.getZona();
-        this.disponible = u.isDisponible();
     }
 
     public UUID getId() {
@@ -38,6 +36,6 @@ public class UnidadDTO {
     }
 
     public boolean isDisponible() {
-        return disponible;
+        return estado == ESTADO_UNIDAD.DISPONIBLE;
     }
 }

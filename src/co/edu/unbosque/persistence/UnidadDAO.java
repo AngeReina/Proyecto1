@@ -1,49 +1,73 @@
 package co.edu.unbosque.persistence;
 
+import java.util.UUID;
+
 import co.edu.unbosque.model.base.ListaEnlazada;
 import co.edu.unbosque.model.unidad.Unidad;
 
-public class UnidadDAO {
+public class UnidadDAO extends AbstractFileDAO<Unidad, UUID> {
 
-    private ListaEnlazada<Unidad> lista;
+    private DataMapper mapper;
 
     public UnidadDAO() {
-        lista = new ListaEnlazada<>();
+        super("data/unidades.txt");
+        mapper = new DataMapper();
+        loadFromFile();
     }
 
-    // ✔ guardar
-    public void guardar(Unidad u) {
-        lista.add(u);
+    @Override
+    protected String objectToLine(Unidad u) {
+        return mapper.unidadToLine(u);
     }
 
-    // ✔ buscar por id
-    public Unidad buscarPorId(Object id) {
-
-        for (int i = 0; i < lista.count(); i++) {
-
-            Unidad u = lista.getValueByPos(i);
-
-            if (u != null && u.getId().equals(id)) {
-                return u;
-            }
-        }
-
-        return null;
+    @Override
+    protected Unidad lineToObject(String line) {
+        return mapper.lineToUnidad(line);
     }
 
-    // 🔥 MÉTODO CLAVE DEL TALLER
+    @Override
+    protected UUID getId(Unidad u) {
+        return u.getId();
+    }
+
+    @Override
+    protected boolean compareId(Unidad u, UUID id) {
+        return u.getId().equals(id);
+    }
+
+    // Método propio del negocio
     public Unidad buscarDisponible(String zona) {
 
         for (int i = 0; i < lista.count(); i++) {
 
             Unidad u = lista.getValueByPos(i);
 
-            if (u != null && u.isDisponible() &&
+            if (u != null &&
+                u.isDisponible() &&
                 u.getZona().equalsIgnoreCase(zona)) {
+
                 return u;
             }
         }
 
         return null;
     }
+
+    public ListaEnlazada<Unidad> buscarDisponibles(String zona) {
+
+    ListaEnlazada<Unidad> resultado = new ListaEnlazada<>();
+
+    for (int i = 0; i < lista.count(); i++) {
+
+        Unidad u = lista.getValueByPos(i);
+
+        if (u != null &&
+            u.getZona().equalsIgnoreCase(zona)) {
+
+            resultado.add(u);
+        }
+    }
+
+    return resultado;
+}
 }
