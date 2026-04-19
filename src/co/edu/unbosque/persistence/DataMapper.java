@@ -1,7 +1,10 @@
 package co.edu.unbosque.persistence;
 
+import co.edu.unbosque.model.base.ListaEnlazada;
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
+import co.edu.unbosque.model.tecnico.TecnicoDTO;
 
 public class DataMapper {
 
@@ -39,5 +42,59 @@ public class DataMapper {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	public Tecnico toTecnico(TecnicoDTO dto) {
+        if (dto == null) return null;
+
+        return new Tecnico(
+                dto.getId(),
+                dto.getNombre(),
+                dto.getEspecialidad(),
+                EstadoTecnico.valueOf(dto.getEstado().toUpperCase()),
+                dto.getZona()
+        );
+    }
+
+    public TecnicoDTO toTecnicoDTO(Tecnico t) {
+        if (t == null) return null;
+
+        return new TecnicoDTO(
+                t.getId(),
+                t.getNombre(),
+                t.getEspecialidad(),
+                t.getEstado().name(),
+                t.getZona()
+        );
+    }
+
+    public ListaEnlazada<TecnicoDTO> toTecnicoDTOList(ListaEnlazada<Tecnico> lista) {
+        ListaEnlazada<TecnicoDTO> dtoList = new ListaEnlazada<>();
+
+        for (int i = 0; i < lista.count(); i++) {
+            Tecnico t = lista.getValueByPos(i);
+            if (t != null) {
+                dtoList.add(toTecnicoDTO(t));
+            }
+        }
+
+        return dtoList;
+    }
+    
+	public String solicitudDtoToLine(SolicitudDTO dto) {
+		if (dto == null) {
+			return null;
+		}
+
+		return dto.getClienteid() + ";" +
+		       dto.getId() + ";" +
+		       dto.getTipo() + ";" +
+		       dto.getUbicacion() + ";" +
+		       dto.getTecnicoAsignado() + ";" +
+		       dto.getCriterioCriticidad() + ";" +
+			   dto.getDescripcionIncidente() + ";" +
+			   dto.getEstado() + ";" +
+			   dto.getFechaCreacion() + ";" +
+			   dto.getFechaAsignacion() + ";" +
+			   dto.getFechaAtencion();
 	}
 }

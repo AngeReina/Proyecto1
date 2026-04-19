@@ -17,4 +17,6 @@ public interface IDAO<T, ID> {
     void loadFromFile();
 
     void saveToFile();
+    
+    void deleteFile();
 }

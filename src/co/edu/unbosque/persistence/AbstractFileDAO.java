@@ -81,6 +81,7 @@ public abstract class AbstractFileDAO<T, ID> implements IDAO<T, ID> {
 
 	@Override
 	public ListaEnlazada<T> getAll() {
+		loadFromFile();
 		return lista;
 	}
 
@@ -147,6 +148,17 @@ public abstract class AbstractFileDAO<T, ID> implements IDAO<T, ID> {
 			} catch (IOException e) {
 				System.out.println("Error al cerrar escritor: " + e.getMessage());
 			}
+		}
+	}
+	
+	@Override
+	public void deleteFile() {
+		File file = new File(filePath);
+
+		if (file.getParentFile() != null && !file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		} else {
+			file.delete();
 		}
 	}
 }

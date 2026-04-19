@@ -3,16 +3,17 @@ package co.edu.unbosque.model.solicitud;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import co.edu.unbosque.model.cliente.Cliente;
+import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.CriterioCriticidad;
 import co.edu.unbosque.model.enums.EstadoSolicitud;
 import co.edu.unbosque.model.enums.TipoSolicitud;
-import co.edu.unbosque.model.tecnico.Tecnico;
+import co.edu.unbosque.model.tecnico.TecnicoDTO;
+import co.edu.unbosque.model.unidad.UnidadDTO;
 
 public class Solicitud {
 	
     private String id;
-    private Cliente cliente;
+    private ClienteDTO cliente;
     private String descripcionIncidente;
     private String ubicacion;
     private TipoSolicitud tipo;
@@ -23,10 +24,10 @@ public class Solicitud {
     private long fechaAtencion;
     
     // Recursos asignados (inicialmente null)
-    //private UnidadServicio unidadAsignada;
-    private Tecnico tecnicoAsignado;
+    private UnidadDTO unidadAsignada;
+    private TecnicoDTO tecnicoAsignado;
 
-    public Solicitud(String id, Cliente cliente, String descripcionIncidente, 
+    public Solicitud(String id, ClienteDTO cliente, String descripcionIncidente, 
                      String ubicacion, TipoSolicitud tipo, CriterioCriticidad criterioCriticidad) {
         this.id = id;
         this.cliente = cliente;
@@ -39,12 +40,11 @@ public class Solicitud {
     }
 
     // Métodos de negocio
-    public void asignarRecursos(/**UnidadServicio unidad, **/Tecnico tecnico) {
+    public void asignarRecursos(UnidadDTO unidad, TecnicoDTO tecnico) {
         //this.unidadAsignada = unidad;
         this.tecnicoAsignado = tecnico;
         this.estado = EstadoSolicitud.ASIGNADA;
         this.fechaAsignacion = System.currentTimeMillis();
-        // Marcar unidad y técnico como ocupados (se hará externamente)
     }
 
     public void marcarAtendida() {
@@ -54,7 +54,7 @@ public class Solicitud {
 
     // Getters y Setters
     public String getId() { return id; }
-    public Cliente getCliente() { return cliente; }
+    public ClienteDTO getCliente() { return cliente; }
     public String getDescripcionIncidente() { return descripcionIncidente; }
     public String getUbicacion() { return ubicacion; }
     public TipoSolicitud getTipo() { return tipo; }
@@ -68,12 +68,12 @@ public class Solicitud {
     public String getFechaAsignacionStr() { return formatearFecha(fechaAsignacion); }
     public String getFechaAtencionStr() { return formatearFecha(fechaAtencion); }
     
-    //public UnidadServicio getUnidadAsignada() { return unidadAsignada; }
-    public Tecnico getTecnicoAsignado() { return tecnicoAsignado; }
+    public UnidadDTO getUnidadAsignada() { return unidadAsignada; }
+    public TecnicoDTO getTecnicoAsignado() { return tecnicoAsignado; }
     
     public void setEstado(EstadoSolicitud estado) { this.estado = estado; }
-    //public void setUnidadAsignada(UnidadServicio unidad) { this.unidadAsignada = unidad; }
-    public void setTecnicoAsignado(Tecnico tecnico) { this.tecnicoAsignado = tecnico; }
+    public void setUnidadAsignada(UnidadDTO unidad) { this.unidadAsignada = unidad; }
+    public void setTecnicoAsignado(TecnicoDTO tecnico) { this.tecnicoAsignado = tecnico; }
 
     private String formatearFecha(long timestamp) {
         Date fecha = new Date(timestamp);
