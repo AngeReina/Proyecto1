@@ -2,6 +2,7 @@ package co.edu.unbosque.persistence;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
 
@@ -78,4 +79,22 @@ public class DataMapper {
 
         return dtoList;
     }
+    
+	public String solicitudDtoToLine(SolicitudDTO dto) {
+		if (dto == null) {
+			return null;
+		}
+
+		return dto.getClienteid() + ";" +
+		       dto.getId() + ";" +
+		       dto.getTipo() + ";" +
+		       dto.getUbicacion() + ";" +
+		       dto.getTecnicoAsignado() + ";" +
+		       dto.getCriterioCriticidad() + ";" +
+			   dto.getDescripcionIncidente() + ";" +
+			   dto.getEstado() + ";" +
+			   dto.getFechaCreacion() + ";" +
+			   dto.getFechaAsignacion() + ";" +
+			   dto.getFechaAtencion();
+	}
 }

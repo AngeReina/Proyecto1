@@ -5,14 +5,14 @@ import co.edu.unbosque.model.reports.Reporte;
 public class ReporteDAO extends AbstractFileDAO<Reporte, Integer> {
 
 	public ReporteDAO() {
-		super("data/reporte.csv");
+		super("report/reporte.csv");
 		loadFromFile();
 	}
 
 	@Override
 	protected String objectToLine(Reporte obj) {
 		// TODO Auto-generated method stub
-		return "message";
+		return obj.getData();
 	}
 
 	@Override
