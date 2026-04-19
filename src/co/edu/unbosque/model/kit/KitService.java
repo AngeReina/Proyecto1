@@ -50,7 +50,7 @@ public class KitService {
     	return dao.update(mapper.toKit(kit));
     }
     
-    public boolean revisarKit() {
+    public String revisarKit() {
         Kit k = pilaKitsMantenimiento.peek();
         if (k != null) {
         	pilaKitsMantenimiento.pop();
@@ -58,10 +58,10 @@ public class KitService {
         	dao.update(k);
         	pilaKitsDisponibles.push(k);
         	
-        	return true;
+        	return k.getTipo();
         } 
     	
-    	return false;
+    	return null;
     }
 
     public KitDTO retirarKit() {
