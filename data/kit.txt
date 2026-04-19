@@ -1,0 +1,2 @@
+a912597b-920c-4a11-867f-ed192ad27365;almacen;false
+a912597b-920c-4a11-867f-ed192ad27365;almacen;true

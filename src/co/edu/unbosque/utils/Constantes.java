@@ -26,5 +26,14 @@ public class Constantes {
     public static final String BTN_CLIENTE_BUSCAR = "cliente_buscar";
     public static final String BTN_CLIENTE_LIMPIAR = "cliente_limpiar";
     public static final String BTN_CLIENTE_CERRAR = "cliente_cerrar";
+    
+    // ---- KITS ----
+    
+    public static final String BTN_ABRIR_DIALOGO_KITS = "abrir_dialogo_kits";
+    public static final String BTN_KITS_REGISTRAR = "kits_registrar";
+    public static final String BTN_KITS_DEVOLVER = "kits_devolver";
+    public static final String BTN_KITS_REVISAR = "kit_revisar";
+    public static final String BTN_KITS_RETIRAR = "kit_retirar";
+    public static final String BTN_KIT_CERRAR = "kits_cerrar";
 
 }

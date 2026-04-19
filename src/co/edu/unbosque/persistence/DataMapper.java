@@ -6,6 +6,8 @@ import co.edu.unbosque.model.cliente.Cliente;
 import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.EstadoTecnico;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.kit.Kit;
+import co.edu.unbosque.model.kit.KitDTO;
 import co.edu.unbosque.model.enums.TIPO_CLIENTE;
 import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
@@ -133,7 +135,7 @@ public class DataMapper {
 		return cliente.getId() + ";" +
 		cliente.getNombre() + ";" +
 		cliente.getTelefono() + ";" +
-		cliente.getTipo().name() + ";";
+		cliente.getTipo().name();
 	}
 
 	public Cliente lineToCliente(String line) {
@@ -191,6 +193,73 @@ public class DataMapper {
 
         return dtoList;
     }
+    
+  //KIT ----------------------------------------------------------------------------------------------------------------
+
+  	public String kitToLine(Kit kit) {
+  		if (kit == null) {
+  			return null;
+  		}
+
+  		return kit.getId().toString() + ";" +
+  		kit.getTipo() + ";" +
+  		kit.isNecesitaRevision();
+  	}
+
+  	public Kit lineToKit(String line) {
+  		if (line == null || line.trim().isEmpty()) {
+  			return null;
+  		}
+
+  		String[] parts = line.split(";");
+
+  		if (parts.length != 3) {
+  			return null;
+  		}
+
+  		try {
+  			java.util.UUID id = java.util.UUID.fromString(parts[0]);
+  			String tipo = parts[1];
+  			boolean necesitaRevision = Boolean.parseBoolean(parts[2]);
+
+  			return new Kit(id, tipo, necesitaRevision);
+  		} catch (Exception e) {
+  			return null;
+  		}
+  	}
+  	
+  	public Kit toKit(KitDTO dto) {
+          if (dto == null) return null;
+
+          return new Kit(
+                  dto.getId(),
+                  dto.getTipo(),
+                  dto.isNecesitaRevision());
+     }
+
+      public KitDTO toKitDTO(Kit c) {
+          if (c == null) return null;
+          
+          KitDTO dto = new KitDTO();
+          dto.setId(c.getId());
+          dto.setNecesitaRevision(c.isNecesitaRevision());
+          dto.setTipo(c.getTipo());
+
+          return dto;
+      }
+
+      public ListaEnlazada<KitDTO> toKitDTOList(ListaEnlazada<Kit> lista) {
+          ListaEnlazada<KitDTO> dtoList = new ListaEnlazada<>();
+
+          for (int i = 0; i < lista.count(); i++) {
+        	  Kit t = lista.getValueByPos(i);
+              if (t != null) {
+                  dtoList.add(toKitDTO(t));
+              }
+          }
+
+          return dtoList;
+      }
 
 
     //SOLICITUD ---------------------------------------------------------------------------------------------------------------

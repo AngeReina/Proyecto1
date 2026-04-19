@@ -10,6 +10,8 @@ import co.edu.unbosque.view.VistaConsola;
 import co.edu.unbosque.view.VistaPrincipal;
 import co.edu.unbosque.utils.Constantes;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.kit.KitDTO;
+import co.edu.unbosque.model.kit.KitService;
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.unidad.UnidadDTO;
 import co.edu.unbosque.model.unidad.UnidadServicio;
@@ -23,6 +25,7 @@ public class ServicioControlador {
 	private TecnicoService tecnicoService;
 	private UnidadDTO ultimaUnidad;
 	private ClienteService clienteService;
+	private KitService kitService;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 
@@ -237,6 +240,33 @@ public class ServicioControlador {
                 case Constantes.BTN_CLIENTE_CERRAR:
                     vista.getDialogoCliente().setVisible(false);
                     break;
+                    
+                case Constantes.BTN_ABRIR_DIALOGO_KITS: {
+                    vista.abrirDialogoKit();
+                    break;
+                }
+                case Constantes.BTN_KITS_REGISTRAR: {
+                	KitDTO kitDto = new KitDTO();
+                	kitDto.setTipo(vista.getDialogoKit().getTipo());
+
+                    boolean kitRegistrado = registrarKit(kitDto);
+
+                    if (kitRegistrado) {
+                        vista.getDialogoKit().mostrarMensaje("Kit registrado");
+                        vista.getDialogoKit().limpiarCampos();
+                    } else {
+                        vista.getDialogoKit().mostrarMensaje("Error al registrar");
+                    }
+                    break;
+                }
+                case Constantes.BTN_KITS_REVISAR: {
+                	revisarKit();
+                    break;
+                }
+                case Constantes.BTN_KIT_CERRAR: {
+                	revisarKit();
+                    break;
+                }
             }
         }
 	};
@@ -247,10 +277,12 @@ public class ServicioControlador {
         this.consoleView = new VistaConsola();
 		this.tecnicoService = new TecnicoService();
 		this.clienteService = new ClienteService();
+		this.kitService = new KitService();
 	}
 
 	public void init() {
 		consoleView.printMessage("--INIT VIEW--");
+		kitService.init();
 		vista.abrirVista();
 	}
 
@@ -293,6 +325,25 @@ public class ServicioControlador {
 	public ClienteDTO buscarCliente(int id) {
 	    return clienteService.buscarCliente(id);
 	}
+	
+	// =========================  METODOS DE KITS ========================
+	
+	public boolean registrarKit(KitDTO dto) {
+	    return kitService.agregarKit(dto);
+	}
+	
+	public boolean devolverKit(KitDTO dto) {
+	    return kitService.devolverKit(dto);
+	}
+	
+	public boolean revisarKit() {
+	    return kitService.revisarKit();
+	}
+	
+	public KitDTO retirarKit() {
+	    return kitService.retirarKit();
+	}
+
 
 	// =========================  METODOS DE SOLICITUD ========================
 

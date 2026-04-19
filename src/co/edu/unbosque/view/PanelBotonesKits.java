@@ -6,14 +6,14 @@ import java.awt.event.ActionListener;
 
 import co.edu.unbosque.utils.Constantes;
 
-public class PanelBotonesTecnico extends JPanel {
+public class PanelBotonesKits extends JPanel {
 
     private JButton btnRegistrar;
-    private JButton btnBuscar;
+    private JButton btnRevisar;
     private JButton btnLimpiar;
     private JButton btnCerrar;
 
-    public PanelBotonesTecnico() {
+    public PanelBotonesKits() {
         setLayout(new GridLayout(1, 4, 10, 10));
 
         initComponents();
@@ -22,26 +22,26 @@ public class PanelBotonesTecnico extends JPanel {
 
     private void initComponents() {
         btnRegistrar = new JButton("Registrar");
-        btnBuscar = new JButton("Buscar");
+        btnRevisar = new JButton("Revisar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
 
-        btnRegistrar.setActionCommand(Constantes.BTN_TECNICO_REGISTRAR);
-        btnBuscar.setActionCommand(Constantes.BTN_TECNICO_BUSCAR);
-        btnLimpiar.setActionCommand(Constantes.BTN_TECNICO_LIMPIAR);
-        btnCerrar.setActionCommand(Constantes.BTN_TECNICO_CERRAR);
+        btnRegistrar.setActionCommand(Constantes.BTN_KITS_REGISTRAR);
+        btnRevisar.setActionCommand(Constantes.BTN_KITS_REVISAR);
+        btnLimpiar.setActionCommand(Constantes.BTN_CLIENTE_LIMPIAR);
+        btnCerrar.setActionCommand(Constantes.BTN_CLIENTE_CERRAR);
     }
 
     private void addComponents() {
         add(btnRegistrar);
-        add(btnBuscar);
+        add(btnRevisar);
         add(btnLimpiar);
         add(btnCerrar);
     }
 
-	public void setListener(ActionListener listener) {
+    public void setListener(ActionListener listener) {
         btnRegistrar.addActionListener(listener);
-        btnBuscar.addActionListener(listener);
+        btnRevisar.addActionListener(listener);
         btnLimpiar.addActionListener(listener);
         btnCerrar.addActionListener(listener);
     }
