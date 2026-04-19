@@ -61,7 +61,7 @@ public class VistaPrincipal extends JFrame {
         dialogoKit.setListener(e -> cmdListener.ejecutarComando(e.getActionCommand()));
         
         btnSolicitud = new JButton("Gestionar Solicitudes");
-        btnSolicitud.setActionCommand(Constantes.BTN_ABRIR_DIALOGO_KITS);
+        btnSolicitud.setActionCommand(Constantes.BTN_ABRIR_DIALOGO_SOLICITUD);
         
         dialogoSolicitud = new DialogoSolicitud();
         dialogoSolicitud.setListener(e -> cmdListener.ejecutarComando(e.getActionCommand()));

@@ -10,6 +10,7 @@ import co.edu.unbosque.view.VistaConsola;
 import co.edu.unbosque.view.VistaPrincipal;
 import co.edu.unbosque.utils.Constantes;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.TipoSolicitud;
 import co.edu.unbosque.model.kit.KitDTO;
 import co.edu.unbosque.model.kit.KitService;
 import co.edu.unbosque.model.reports.ReporteDTO;
@@ -424,9 +425,4 @@ public class ServicioControlador {
 	public KitDTO retirarKit() {
 	    return kitService.retirarKit();
 	}
-
-
-	// =========================  METODOS DE SOLICITUD ========================
-
-	// =========================  METODOS DE REPORTES =========================
 }

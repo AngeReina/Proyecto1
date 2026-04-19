@@ -15,8 +15,9 @@ import co.edu.unbosque.persistence.SolicitudDAO;
 
 public class SolicitudServicio {
 	
-	private static int INDEX_PRIORITARIO = 0;
-	private static int INDEX_NORMAL = 1;
+	private static final int INDEX_PRIORITARIO = 0;
+	private static final int INDEX_NORMAL = 1;
+	private static final UUID UUID_DEFAULT = UUID.randomUUID();
 
 	private DataMapper mapper;
     private ColaPrioridadPropia<Solicitud> colaPrioridadPropia;
@@ -40,10 +41,14 @@ public class SolicitudServicio {
     	int count = list.count();
     	for (int i = count-1; i >= 0; i--) {
     		Solicitud s = list.getValueByPos(i);
-    		if (s.getTipo().equals(TipoSolicitud.CRITICA)) {
-    			colaPrioridadPropia.queueByPriority(INDEX_PRIORITARIO, s);
-    		} else {
-    			colaPrioridadPropia.queueByPriority(INDEX_NORMAL, s);
+    		if (s.getEstado().equals(EstadoSolicitud.PENDIENTE)) {
+        		if (s.getTipo().equals(TipoSolicitud.CRITICA)) {
+        			colaPrioridadPropia.queueByPriority(INDEX_PRIORITARIO, s);
+        		} else {
+        			colaPrioridadPropia.queueByPriority(INDEX_NORMAL, s);
+        		}	
+    		} else if (s.getEstado().equals(EstadoSolicitud.ATENDIDA)) {
+    			historicoAtendidas.add(s);
     		}
     	}
     }
@@ -51,10 +56,14 @@ public class SolicitudServicio {
     public void registrarSolicitud(SolicitudDTO dto) {
         int prioridad = INDEX_NORMAL;
         
+        dto.setTipo(TipoSolicitud.ORDINARIA.name());
+        dto.setEstado(EstadoSolicitud.PENDIENTE.name());
+        dto.setUnidadId(UUID_DEFAULT);
+        
         Solicitud solicitud = mapper.toSolicitud(dto);
         
         
-        if (solicitud.getClienteTipo() == TIPO_CLIENTE.PREMIUN) {
+        if (solicitud.getClienteTipo() == TIPO_CLIENTE.PREMIUN || solicitud.getCriterioCriticidad() != CriterioCriticidad.NORMAL) {
         	solicitud.setTipo(TipoSolicitud.CRITICA);
             prioridad = INDEX_PRIORITARIO;
         }

@@ -320,13 +320,9 @@ public class DataMapper {
   		}
 
   		String[] parts = line.split(";");
+			Solicitud solicitud = new Solicitud(0, 0, line, line, null, null);
+			SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
 
-  		try {
-
-  			Solicitud solicitud = new Solicitud(0, 0, line, line, null, null);
-  			
-  			SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
-  			
   			solicitud.setClienteId(Integer.parseInt(parts[0]));
   	  		solicitud.setId(Integer.parseInt(parts[1]));
   	  		solicitud.setTipo(TipoSolicitud.valueOf(parts[2]));
@@ -335,17 +331,18 @@ public class DataMapper {
   	  		solicitud.setCriterioCriticidad(CriterioCriticidad.valueOf(parts[5]));
   	 		solicitud.setDescripcionIncidente(parts[6]);
   	 		solicitud.setEstado(EstadoSolicitud.valueOf(parts[7]));
+  	 		solicitud.setClienteTipo(TIPO_CLIENTE.valueOf(parts[11]));
+  	 		solicitud.setUnidadId(java.util.UUID.fromString(parts[12]));
+  		
+ 		try {
   	 		solicitud.setFechaCreacion(sdf.parse(parts[8]).getTime());
   	 		solicitud.setFechaAsignacion(sdf.parse(parts[9]).getTime());
   	 		solicitud.setFechaAtencion(sdf.parse(parts[10]).getTime());
-  	 		solicitud.setClienteTipo(TIPO_CLIENTE.valueOf(parts[11]));
-  	 		solicitud.setUnidadId(java.util.UUID.fromString(parts[12]));
-  	 		
-  			
-  			return solicitud;
-  		} catch (Exception e) {
-  			return null;
-  		}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
+ 		
+		return solicitud;
   	}
   	
   	public Solicitud toSolicitud(SolicitudDTO dto) {
@@ -370,7 +367,7 @@ public class DataMapper {
 				solicitud.setFechaCreacion(sdf.parse(dto.getFechaCreacion()).getTime());
 		 		solicitud.setFechaAsignacion(sdf.parse(dto.getFechaAsignacion()).getTime());
 		 		solicitud.setFechaAtencion(sdf.parse(dto.getFechaAtencion()).getTime());
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 			}
 	 		
