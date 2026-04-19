@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.Zona;
 import co.edu.unbosque.persistence.UnidadDAO;
 import co.edu.unbosque.model.base.ListaEnlazada;
 
@@ -18,11 +19,12 @@ public class UnidadServicio {
     }
 
     // Registrar una nueva unidad
-    public void registrarUnidad(TIPO_VEHICULO tipo, ESTADO_UNIDAD estado, String zona) {
-        if (zona != null) {
-            zona = zona.trim().toUpperCase();
+    public void registrarUnidad(TIPO_VEHICULO tipo, ESTADO_UNIDAD estado, Zona zona) {
+
+        if (zona == null) {
+            return;
         }
-        
+
         Unidad unidad = new Unidad(UUID.randomUUID(), tipo, estado, zona);
         unidadDAO.create(unidad);
     }

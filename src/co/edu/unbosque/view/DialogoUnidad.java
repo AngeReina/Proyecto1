@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.Zona;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -40,7 +41,7 @@ public class DialogoUnidad extends JDialog {
     }
 
     // ---- GETTERS (para el controller) ----
-    public String getZona() {
+    public Zona getZona() {
         return panelDatos.getZona();
     }
 
@@ -64,8 +65,7 @@ public class DialogoUnidad extends JDialog {
     public boolean datosValidos() {
         return getTipo() != null &&
             getEstado() != null &&
-            getZona() != null &&
-            !getZona().trim().isEmpty();
+            getZona() != null;
     }
 
     public Object[] pedirIdYEstado() {
@@ -96,7 +96,21 @@ public class DialogoUnidad extends JDialog {
         return null;
     }
 
-    public String pedirZonaBusqueda() {
-        return JOptionPane.showInputDialog(this, "Ingrese la zona a buscar:");
+   public Zona pedirZonaBusqueda() {
+
+        JComboBox<Zona> comboZona = new JComboBox<>(Zona.values());
+
+        int result = JOptionPane.showConfirmDialog(
+            this,
+            comboZona,
+            "Seleccione la zona a buscar",
+            JOptionPane.OK_CANCEL_OPTION
+        );
+
+        if (result == JOptionPane.OK_OPTION) {
+            return (Zona) comboZona.getSelectedItem();
+        }
+
+        return null;
     }
 }
