@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.enums.ZonaTecnico;
 
 public class PanelDatosTecnico extends JPanel {
 
@@ -11,7 +12,7 @@ public class PanelDatosTecnico extends JPanel {
     private JTextField txtNombre;
     private JTextField txtEspecialidad;
     private JComboBox<EstadoTecnico> comboEstado;
-    private JTextField txtZona;
+    private JComboBox<ZonaTecnico> comboZona;
 
     public PanelDatosTecnico() {
         setLayout(new GridLayout(5, 2, 10, 10));
@@ -26,7 +27,7 @@ public class PanelDatosTecnico extends JPanel {
         txtNombre = new JTextField();
         txtEspecialidad = new JTextField();
         comboEstado = new JComboBox<>(EstadoTecnico.values());
-        txtZona = new JTextField();
+        comboZona = new JComboBox<>(ZonaTecnico.values());
     }
 
     private void addComponents() {
@@ -43,7 +44,7 @@ public class PanelDatosTecnico extends JPanel {
         add(comboEstado);
 
         add(new JLabel("Zona:"));
-        add(txtZona);
+        add(comboZona);
     }
 
     public int getId() {
@@ -73,7 +74,7 @@ public class PanelDatosTecnico extends JPanel {
     }
 
     public String getZona() {
-        return txtZona.getText().trim();
+        return comboZona.getSelectedItem().toString();
     }
 
     public void limpiarCampos() {
@@ -81,6 +82,6 @@ public class PanelDatosTecnico extends JPanel {
         txtNombre.setText("");
         txtEspecialidad.setText("");
         comboEstado.setSelectedIndex(0);
-        txtZona.setText("");
+        comboZona.setSelectedIndex(0);
     }
 }
