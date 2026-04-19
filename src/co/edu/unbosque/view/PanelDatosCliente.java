@@ -37,7 +37,7 @@ public class PanelDatosCliente extends JPanel {
         add(new JLabel("Telefono:"));
         add(txtTelefono);
 
-        add(new JLabel("Estado:"));
+        add(new JLabel("Tipo:"));
         add(comboTipo);
     }
 

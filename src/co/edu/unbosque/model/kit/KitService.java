@@ -75,5 +75,9 @@ public class KitService {
     	
     	return null;
     }
+    
+    public boolean existeKitDisponible() {
+    	return !pilaKitsDisponibles.isEmpty();
+    }
 
 }
