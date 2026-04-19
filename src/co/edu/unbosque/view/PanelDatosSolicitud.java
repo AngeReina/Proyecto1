@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 import co.edu.unbosque.model.enums.CriterioCriticidad;
+import co.edu.unbosque.model.enums.Zona;
 
 public class PanelDatosSolicitud extends JPanel {
 	
     private JTextField txtIdCliente;
     private JTextField txtDescripcion;
-    private JTextField txtUbicacion;
+    private JComboBox<Zona> comboUbicacion;
     private JComboBox<CriterioCriticidad> comboTipo;
 
     public PanelDatosSolicitud() {
@@ -23,7 +24,7 @@ public class PanelDatosSolicitud extends JPanel {
     private void initComponents() {
     	txtIdCliente = new JTextField();
     	txtDescripcion = new JTextField();
-    	txtUbicacion = new JTextField();
+    	comboUbicacion =  new JComboBox<>(Zona.values());
         comboTipo = new JComboBox<>(CriterioCriticidad.values());
     }
 
@@ -35,7 +36,7 @@ public class PanelDatosSolicitud extends JPanel {
         add(txtDescripcion);
 
         add(new JLabel("Ubicacion:"));
-        add(txtUbicacion);
+        add(comboUbicacion);
 
         add(new JLabel("Criticidad:"));
         add(comboTipo);
@@ -60,7 +61,7 @@ public class PanelDatosSolicitud extends JPanel {
     }
 
     public String getUbicacion() {
-        return txtUbicacion.getText().trim();
+        return comboUbicacion.getSelectedItem().toString();
     }
 
     public String getTipo() {
@@ -70,7 +71,7 @@ public class PanelDatosSolicitud extends JPanel {
     public void limpiarCampos() {
     	txtIdCliente.setText("");
     	txtDescripcion.setText("");
-    	txtUbicacion.setText("");
+        comboUbicacion.setSelectedIndex(0);
         comboTipo.setSelectedIndex(0);
     }
 

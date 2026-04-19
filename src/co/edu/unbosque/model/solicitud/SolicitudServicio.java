@@ -82,7 +82,6 @@ public class SolicitudServicio {
     	}
     	
     	Solicitud res = colaPrioridadPropia.getBeginByPriority(prioridad);
-        colaPrioridadPropia.dequeueByPriority(prioridad);
         
         if (res == null) {
         	return null;

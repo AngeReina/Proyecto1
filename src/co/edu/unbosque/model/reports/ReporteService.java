@@ -16,10 +16,14 @@ public class ReporteService {
 	
 	public void generarReporteSolicitudes(ReporteDTO dto) {
 		dao.deleteFile();
+		StringBuilder stringBuilder = new StringBuilder();
 		
 		for (SolicitudDTO solicitudDTO : dto.getSolicitudes()) {
 			String field = dataMapper.solicitudDtoToLine(solicitudDTO);
-			dao.create(new Reporte(field));
+			stringBuilder.append(field);
+			stringBuilder.append("\n");
 		}
+		
+		dao.create(new Reporte(stringBuilder.toString()));
 	}
 }

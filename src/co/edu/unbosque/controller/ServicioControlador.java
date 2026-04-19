@@ -312,9 +312,19 @@ public class ServicioControlador {
                     	UnidadDTO unidadDisponible = unidadServicio.buscarDisponible(solicitudAsignable.getUbicacion());
                     	TecnicoDTO tecnicoDisponible = tecnicoService.buscarTecnicoDisponibleDTO(solicitudAsignable.getUbicacion());
                     	
-                    	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
-                    	kitEnUso = kitService.retirarKit();
-                		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                    	if (unidadDisponible == null) {
+                    		vista.getDialogoSolicitud().mostrarMensaje("No hay unidades de atencion disponibles en la zona");
+                    	}
+                    	else if (tecnicoDisponible == null) {
+                    		vista.getDialogoSolicitud().mostrarMensaje("No hay tecnicos disponibles en la zona");
+                    	} else if (kitService.existeKitDisponible()) {
+                        	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
+                        	kitEnUso = kitService.retirarKit();
+                    		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                    	} else {
+                    		vista.getDialogoSolicitud().mostrarMensaje("No hay kits disponibles");
+                    	}
+                    	
                 	} else {
                 		vista.getDialogoSolicitud().mostrarMensaje("No hay solicitudes pendientes");
                 	}
@@ -325,7 +335,7 @@ public class ServicioControlador {
                 case Constantes.BTN_SOLICITUD_COMPLETAR: {                
                 	solicitudServicio.marcarComoAtendida(solicitudActual); 
                 	kitService.devolverKit(kitEnUso);
-                	vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	vista.getDialogoSolicitud().mostrarMensaje("Solicitud completada");
                 	
                     break;
                 }
