@@ -12,6 +12,10 @@ import co.edu.unbosque.utils.Constantes;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
 import co.edu.unbosque.model.kit.KitDTO;
 import co.edu.unbosque.model.kit.KitService;
+import co.edu.unbosque.model.reports.ReporteDTO;
+import co.edu.unbosque.model.reports.ReporteService;
+import co.edu.unbosque.model.solicitud.SolicitudDTO;
+import co.edu.unbosque.model.solicitud.SolicitudServicio;
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.unidad.UnidadDTO;
 import co.edu.unbosque.model.unidad.UnidadServicio;
@@ -26,6 +30,11 @@ public class ServicioControlador {
 	private UnidadDTO ultimaUnidad;
 	private ClienteService clienteService;
 	private KitService kitService;
+	private SolicitudServicio solicitudServicio;
+	private SolicitudDTO solicitudActual;
+	private KitDTO kitEnUso;
+	
+	ReporteService reporteService;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 
@@ -271,6 +280,71 @@ public class ServicioControlador {
                 	vista.getDialogoKit().setVisible(false);
                     break;
                 }
+                
+                case Constantes.BTN_ABRIR_DIALOGO_SOLICITUD: {
+                    vista.abrirDialogoSolicitud();
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_REGISTRAR: {
+                	SolicitudDTO solicitudDTO = new SolicitudDTO();
+                	
+                	ClienteDTO solicitante = clienteService.buscarCliente(vista.getDialogoSolicitud().getClienteId());
+                	
+                	if (solicitante != null) {
+                    	
+                    	solicitudDTO.setClienteId(vista.getDialogoSolicitud().getClienteId());
+                    	solicitudDTO.setUbicacion(vista.getDialogoSolicitud().getUbicacion());
+                    	solicitudDTO.setDescripcionIncidente(vista.getDialogoSolicitud().getDescripcion());
+                    	solicitudDTO.setClienteTipo(solicitante.getTipo());
+                    	solicitudDTO.setCriterioCriticidad(vista.getDialogoSolicitud().getTipo());
+                    	
+                    	solicitudServicio.registrarSolicitud(solicitudDTO);	
+                	} else {
+                		vista.getDialogoSolicitud().mostrarMensaje("No existe usuario para solicitud");
+                	}
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_ASIGNAR: {                
+                	SolicitudDTO solicitudAsignable = solicitudServicio.obtenerProximaAtencion();                
+                	
+                	if (solicitudAsignable != null) {
+                    	UnidadDTO unidadDisponible = unidadServicio.buscarDisponible(solicitudAsignable.getUbicacion());
+                    	TecnicoDTO tecnicoDisponible = tecnicoService.buscarTecnicoDisponibleDTO(solicitudAsignable.getUbicacion());
+                    	
+                    	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
+                    	kitEnUso = kitService.retirarKit();
+                		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	} else {
+                		vista.getDialogoSolicitud().mostrarMensaje("No hay solicitudes pendientes");
+                	}
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_COMPLETAR: {                
+                	solicitudServicio.marcarComoAtendida(solicitudActual); 
+                	kitService.devolverKit(kitEnUso);
+                	vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_REPORTE: {                
+                	SolicitudDTO[] data = solicitudServicio.listarHistorialAtendidas();
+                	ReporteDTO reporteDTO = new ReporteDTO();
+                	reporteDTO.setSolicitudes(data);
+                	reporteService.generarReporteSolicitudes(reporteDTO);
+                	vista.getDialogoSolicitud().mostrarMensaje("Reporte generado en csv");
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_CERRAR: {
+                	vista.getDialogoSolicitud().setVisible(false);
+                    break;
+                }
             }
         }
 	};
@@ -282,11 +356,14 @@ public class ServicioControlador {
 		this.tecnicoService = new TecnicoService();
 		this.clienteService = new ClienteService();
 		this.kitService = new KitService();
+		this.solicitudServicio = new SolicitudServicio();
+		this.reporteService = new ReporteService();
 	}
 
 	public void init() {
 		consoleView.printMessage("--INIT VIEW--");
 		kitService.init();
+		solicitudServicio.init();
 		vista.abrirVista();
 	}
 

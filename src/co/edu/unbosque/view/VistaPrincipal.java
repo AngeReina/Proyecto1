@@ -17,6 +17,9 @@ public class VistaPrincipal extends JFrame {
     private DialogoCliente dialogoCliente;
     private JButton btnKit;
     private DialogoKit dialogoKit;
+    
+    private JButton btnSolicitud;
+    private DialogoSolicitud dialogoSolicitud;
 
     public VistaPrincipal(IComandosVista viewCmdListener) {
         this.cmdListener = viewCmdListener;
@@ -56,6 +59,12 @@ public class VistaPrincipal extends JFrame {
         
         dialogoKit = new DialogoKit();
         dialogoKit.setListener(e -> cmdListener.ejecutarComando(e.getActionCommand()));
+        
+        btnSolicitud = new JButton("Gestionar Solicitudes");
+        btnSolicitud.setActionCommand(Constantes.BTN_ABRIR_DIALOGO_KITS);
+        
+        dialogoSolicitud = new DialogoSolicitud();
+        dialogoSolicitud.setListener(e -> cmdListener.ejecutarComando(e.getActionCommand()));
  
     }
 
@@ -82,6 +91,12 @@ public class VistaPrincipal extends JFrame {
         add(btnKit);
 
         btnKit.addActionListener(e -> 
+            cmdListener.ejecutarComando(e.getActionCommand())
+        );
+        
+        add(btnSolicitud);
+
+        btnSolicitud.addActionListener(e -> 
             cmdListener.ejecutarComando(e.getActionCommand())
         );
     }
@@ -122,5 +137,13 @@ public class VistaPrincipal extends JFrame {
 
     public DialogoKit getDialogoKit() {
         return dialogoKit;
+    }
+    
+    public void abrirDialogoSolicitud() {
+    	dialogoSolicitud.setVisible(true);
+    }
+
+    public DialogoSolicitud getDialogoSolicitud() {
+        return dialogoSolicitud;
     }
 }

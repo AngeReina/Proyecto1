@@ -1,6 +1,8 @@
 package co.edu.unbosque.utils;
 
 public class Constantes {
+	
+	public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
 
     // ---- ABRIR DIALOGO ----
     public static final String BTN_ABRIR_DIALOGO_UNIDAD = "abrir_dialogo_unidad";
@@ -36,4 +38,14 @@ public class Constantes {
     public static final String BTN_KITS_RETIRAR = "kit_retirar";
     public static final String BTN_KIT_CERRAR = "kits_cerrar";
     public static final String BTN_KIT_LIMPIAR = "kits_limpiar";
+    
+    // ---- SOLICITUD ----
+    
+    public static final String BTN_ABRIR_DIALOGO_SOLICITUD = "abrir_dialogo_solicitud";
+    public static final String BTN_SOLICITUD_REGISTRAR = "solicitud_registrar";
+    public static final String BTN_SOLICITUD_ASIGNAR = "solicitud_devolver";
+    public static final String BTN_SOLICITUD_COMPLETAR = "solicitud_revisar";
+    public static final String BTN_SOLICITUD_REPORTE = "solicitud_limpiar";
+    public static final String BTN_SOLICITUD_CERRAR = "solicitud_cerrar";
+    public static final String BTN_SOLICITUD_LIMPIAR = "solicitud_limpiar";
 }

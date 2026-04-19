@@ -1,18 +1,27 @@
 package co.edu.unbosque.persistence;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.enums.CriterioCriticidad;
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
+import co.edu.unbosque.model.enums.EstadoSolicitud;
 import co.edu.unbosque.model.cliente.Cliente;
 import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.EstadoTecnico;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.TipoSolicitud;
 import co.edu.unbosque.model.kit.Kit;
 import co.edu.unbosque.model.kit.KitDTO;
 import co.edu.unbosque.model.enums.TIPO_CLIENTE;
+import co.edu.unbosque.model.solicitud.Solicitud;
 import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
 import co.edu.unbosque.model.unidad.Unidad;
+import co.edu.unbosque.utils.Constantes;
 
 public class DataMapper {
 
@@ -269,7 +278,7 @@ public class DataMapper {
 			return null;
 		}
 
-		return dto.getClienteid() + ";" +
+		return dto.getClienteId() + ";" +
 		       dto.getId() + ";" +
 		       dto.getTipo() + ";" +
 		       dto.getUbicacion() + ";" +
@@ -279,6 +288,133 @@ public class DataMapper {
 			   dto.getEstado() + ";" +
 			   dto.getFechaCreacion() + ";" +
 			   dto.getFechaAsignacion() + ";" +
-			   dto.getFechaAtencion();
+			   dto.getFechaAtencion() + ";" +
+			   dto.getClienteTipo()  + ";" +
+			   dto.getUnidadId().toString()
+			   ;
 	}
+	
+  	public String solicitudToLine(Solicitud solicitud) {
+  		if (solicitud == null) {
+  			return null;
+  		}
+
+  		return solicitud.getClienteId() + ";" +
+  		solicitud.getId() + ";" +
+  		solicitud.getTipo().name() + ";" +
+  		solicitud.getUbicacion() + ";" +
+  		solicitud.getTecnicoId() + ";" +
+  		solicitud.getCriterioCriticidad().name() + ";" +
+ 		solicitud.getDescripcionIncidente() + ";" +
+ 		solicitud.getEstado().name() + ";" +
+ 		solicitud.getFechaCreacion() + ";" +
+ 		solicitud.getFechaAsignacion() + ";" +
+ 		solicitud.getFechaAtencion() + ";" +
+ 		solicitud.getClienteTipo().name() + ";" +
+ 		solicitud.getUnidadId().toString() ;
+  	}
+
+  	public Solicitud lineToSolicitud(String line) {
+  		if (line == null || line.trim().isEmpty()) {
+  			return null;
+  		}
+
+  		String[] parts = line.split(";");
+
+  		try {
+
+  			Solicitud solicitud = new Solicitud(0, 0, line, line, null, null);
+  			
+  			SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
+  			
+  			solicitud.setClienteId(Integer.parseInt(parts[0]));
+  	  		solicitud.setId(Integer.parseInt(parts[1]));
+  	  		solicitud.setTipo(TipoSolicitud.valueOf(parts[2]));
+  	  		solicitud.setUbicacion(parts[3]);
+  	  		solicitud.setTecnicoId(Integer.parseInt(parts[4]));
+  	  		solicitud.setCriterioCriticidad(CriterioCriticidad.valueOf(parts[5]));
+  	 		solicitud.setDescripcionIncidente(parts[6]);
+  	 		solicitud.setEstado(EstadoSolicitud.valueOf(parts[7]));
+  	 		solicitud.setFechaCreacion(sdf.parse(parts[8]).getTime());
+  	 		solicitud.setFechaAsignacion(sdf.parse(parts[9]).getTime());
+  	 		solicitud.setFechaAtencion(sdf.parse(parts[10]).getTime());
+  	 		solicitud.setClienteTipo(TIPO_CLIENTE.valueOf(parts[11]));
+  	 		solicitud.setUnidadId(java.util.UUID.fromString(parts[12]));
+  	 		
+  			
+  			return solicitud;
+  		} catch (Exception e) {
+  			return null;
+  		}
+  	}
+  	
+  	public Solicitud toSolicitud(SolicitudDTO dto) {
+          if (dto == null) return null;
+
+           SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
+			
+			Solicitud solicitud = new Solicitud(0, 0, "", "", null, null);
+  			
+			solicitud.setClienteId(dto.getClienteId());
+			solicitud.setClienteTipo(TIPO_CLIENTE.valueOf(dto.getClienteTipo()));
+	  		solicitud.setId(dto.getId());
+	  		solicitud.setTipo(TipoSolicitud.valueOf(dto.getTipo()));
+	  		solicitud.setUbicacion(dto.getUbicacion());
+	  		solicitud.setTecnicoId(dto.getTecnicoAsignado());
+	  		solicitud.setCriterioCriticidad(CriterioCriticidad.valueOf(dto.getCriterioCriticidad()));
+	  		solicitud.setCriterioCriticidad(CriterioCriticidad.valueOf(dto.getCriterioCriticidad()));
+	 		solicitud.setDescripcionIncidente(dto.getDescripcionIncidente());
+	 		solicitud.setEstado(EstadoSolicitud.valueOf(dto.getEstado()));
+	 		solicitud.setUnidadId(dto.getUnidadId());
+	 		try {
+				solicitud.setFechaCreacion(sdf.parse(dto.getFechaCreacion()).getTime());
+		 		solicitud.setFechaAsignacion(sdf.parse(dto.getFechaAsignacion()).getTime());
+		 		solicitud.setFechaAtencion(sdf.parse(dto.getFechaAtencion()).getTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+			}
+	 		
+	 		return solicitud;
+     }
+
+      public SolicitudDTO toSolicitudDTO(Solicitud model) {
+          if (model == null) return null;
+          
+          SolicitudDTO dto = new SolicitudDTO();
+          
+          dto.setClienteId(model.getClienteId());
+          dto.setClienteTipo(model.getClienteTipo().name());
+          dto.setId(model.getId());
+          dto.setTipo(model.getTipo().name());
+          dto.setUbicacion(model.getUbicacion());
+          dto.setTecnicoAsignado(model.getTecnicoId());
+          dto.setCriterioCriticidad(model.getCriterioCriticidad().name());
+          dto.setDescripcionIncidente(model.getDescripcionIncidente());
+          dto.setEstado(model.getEstado().name());
+          dto.setFechaCreacion(formatearFecha(model.getFechaCreacion()));
+	 	  dto.setFechaAsignacion(formatearFecha(model.getFechaAsignacion()));
+	 	  dto.setFechaAtencion(formatearFecha(model.getFechaAtencion()));
+	 	  dto.setUnidadId(model.getUnidadId());
+
+          return dto;
+      }
+
+      public ListaEnlazada<SolicitudDTO> toSolicitudDTOList(ListaEnlazada<Solicitud> lista) {
+          ListaEnlazada<SolicitudDTO> dtoList = new ListaEnlazada<>();
+
+          for (int i = 0; i < lista.count(); i++) {
+        	  Solicitud t = lista.getValueByPos(i);
+              if (t != null) {
+                  dtoList.add(toSolicitudDTO(t));
+              }
+          }
+
+          return dtoList;
+      }
+      
+  	private String formatearFecha(long timestamp) {
+        Date fecha = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
+        return sdf.format(fecha);
+    }
 }
