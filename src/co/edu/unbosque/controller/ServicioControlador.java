@@ -112,27 +112,39 @@ public class ServicioControlador {
 
                     } else if (zonaTecnico != null && !zonaTecnico.trim().isEmpty()) {
 
-                        ListaEnlazada<TecnicoDTO> lista = buscarTecnicosPorZona(zonaTecnico);
+                        TecnicoDTO t = buscarTecnicoDisponible(zonaTecnico);
 
-                        if (lista != null && lista.count() > 0) {
-
-                            String mensaje = "Técnicos en la zona:\n";
-
-                            for (int i = 0; i < lista.count(); i++) {
-                                TecnicoDTO t = lista.getValueByPos(i);
-
-                                mensaje += "\nID: " + t.getId() +
-                                           " | " + t.getNombre() +
-                                           " | " + t.getEspecialidad() +
-                                           " | " + t.getEstado();
-                            }
+                        if (t != null) {
+                            String mensaje = "Técnico disponible:\n" +
+                                    "ID: " + t.getId() + "\n" +
+                                    "Nombre: " + t.getNombre() + "\n" +
+                                    "Especialidad: " + t.getEspecialidad() + "\n" +
+                                    "Estado: " + t.getEstado();
 
                             vista.getDialogoTecnico().mostrarMensaje(mensaje);
 
                         } else {
-                            vista.getDialogoTecnico().mostrarMensaje("No hay técnicos en esa zona");
-                        }
+                            ListaEnlazada<TecnicoDTO> lista = buscarTecnicosPorZona(zonaTecnico);
 
+                            if (lista != null && lista.count() > 0) {
+
+                                String mensaje = "No hay disponibles. Técnicos en la zona:\n";
+
+                                for (int i = 0; i < lista.count(); i++) {
+                                    TecnicoDTO tec = lista.getValueByPos(i);
+
+                                    mensaje += "\nID: " + tec.getId() +
+                                               " | " + tec.getNombre() +
+                                               " | " + tec.getEspecialidad() +
+                                               " | " + tec.getEstado();
+                                }
+
+                                vista.getDialogoTecnico().mostrarMensaje(mensaje);
+
+                            } else {
+                                vista.getDialogoTecnico().mostrarMensaje("No hay técnicos en esa zona");
+                            }
+                        }
                     } else if (especialidad != null && !especialidad.trim().isEmpty()) {
 
                         ListaEnlazada<TecnicoDTO> lista = buscarTecnicosPorEspecialidad(especialidad);
@@ -154,21 +166,6 @@ public class ServicioControlador {
 
                         } else {
                             vista.getDialogoTecnico().mostrarMensaje("No hay técnicos con esa especialidad");
-                        }
-
-                    } else if (zonaTecnico != null && !zonaTecnico.trim().isEmpty()) {
-
-                        TecnicoDTO t = buscarTecnicoDisponible(zonaTecnico);
-
-                        if (t != null) {
-                            String mensaje = "Técnico disponible:\n" +
-                                    "ID: " + t.getId() + "\n" +
-                                    "Nombre: " + t.getNombre() + "\n" +
-                                    "Especialidad: " + t.getEspecialidad();
-
-                            vista.getDialogoTecnico().mostrarMensaje(mensaje);
-                        } else {
-                            vista.getDialogoTecnico().mostrarMensaje("No hay técnicos disponibles");
                         }
 
                     } else {
