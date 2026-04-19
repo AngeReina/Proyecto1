@@ -1,2 +1,3 @@
 a912597b-920c-4a11-867f-ed192ad27365;almacen;false
-a912597b-920c-4a11-867f-ed192ad27365;almacen;true
+8e08e46f-555c-41c6-87f7-df68d457cfe8;otro;false
+50caa653-de01-4c90-9aac-385da3b68fdf;qwrt;false

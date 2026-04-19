@@ -35,5 +35,5 @@ public class Constantes {
     public static final String BTN_KITS_REVISAR = "kit_revisar";
     public static final String BTN_KITS_RETIRAR = "kit_retirar";
     public static final String BTN_KIT_CERRAR = "kits_cerrar";
-
+    public static final String BTN_KIT_LIMPIAR = "kits_limpiar";
 }

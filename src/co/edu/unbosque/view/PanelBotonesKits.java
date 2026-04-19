@@ -28,8 +28,8 @@ public class PanelBotonesKits extends JPanel {
 
         btnRegistrar.setActionCommand(Constantes.BTN_KITS_REGISTRAR);
         btnRevisar.setActionCommand(Constantes.BTN_KITS_REVISAR);
-        btnLimpiar.setActionCommand(Constantes.BTN_CLIENTE_LIMPIAR);
-        btnCerrar.setActionCommand(Constantes.BTN_CLIENTE_CERRAR);
+        btnLimpiar.setActionCommand(Constantes.BTN_KIT_LIMPIAR);
+        btnCerrar.setActionCommand(Constantes.BTN_KIT_CERRAR);
     }
 
     private void addComponents() {

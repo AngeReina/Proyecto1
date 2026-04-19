@@ -263,8 +263,12 @@ public class ServicioControlador {
                 	revisarKit();
                     break;
                 }
+                case Constantes.BTN_KIT_LIMPIAR: {
+                	vista.getDialogoKit().limpiarCampos();
+                    break;
+                }
                 case Constantes.BTN_KIT_CERRAR: {
-                	revisarKit();
+                	vista.getDialogoKit().setVisible(false);
                     break;
                 }
             }
