@@ -13,6 +13,7 @@ import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.EstadoTecnico;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
 import co.edu.unbosque.model.enums.TipoSolicitud;
+import co.edu.unbosque.model.enums.Zona;
 import co.edu.unbosque.model.kit.Kit;
 import co.edu.unbosque.model.kit.KitDTO;
 import co.edu.unbosque.model.enums.TIPO_CLIENTE;
@@ -125,7 +126,7 @@ public class DataMapper {
 			java.util.UUID id = java.util.UUID.fromString(parts[0]);
 			TIPO_VEHICULO tipo = TIPO_VEHICULO.valueOf(parts[1]);
 			ESTADO_UNIDAD estado = ESTADO_UNIDAD.valueOf(parts[2]);
-			String zona = parts[3];
+			Zona zona = Zona.valueOf(parts[3]);
 
 			return new Unidad(id, tipo, estado, zona);
 		} catch (Exception e) {

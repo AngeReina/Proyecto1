@@ -4,13 +4,14 @@ import java.util.UUID;
 
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.Zona;
 
 public class UnidadDTO {
 
     private UUID id;
     private TIPO_VEHICULO tipo;
     private ESTADO_UNIDAD estado;
-    private String zona;
+    private Zona zona;
 
     public UnidadDTO(Unidad u) {
         this.id = u.getId();
@@ -31,7 +32,7 @@ public class UnidadDTO {
         return estado;
     }
 
-    public String getZona() {
+    public Zona getZona() {
         return zona;
     }
 
