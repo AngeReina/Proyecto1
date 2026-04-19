@@ -2,14 +2,17 @@ package co.edu.unbosque.model.tecnico;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.persistence.DataMapper;
 import co.edu.unbosque.persistence.TecnicoDAO;
 
 public class TecnicoService {
 
 	private TecnicoDAO tecnicoDAO;
+	private DataMapper mapper;
 
 	public TecnicoService() {
 		tecnicoDAO = new TecnicoDAO();
+		mapper = new DataMapper();
 	}
 
 	public boolean registrarTecnico(Tecnico tecnico) {
@@ -72,6 +75,7 @@ public class TecnicoService {
 
 		return null;
 	}
+
 	public boolean validarDisponibilidad(int id) {
 		Tecnico tecnico = tecnicoDAO.read(id);
 
@@ -80,5 +84,65 @@ public class TecnicoService {
 		}
 
 		return tecnico.getEstado() == EstadoTecnico.DISPONIBLE;
+	}
+
+
+	public boolean registrarTecnicoDTO(TecnicoDTO dto) {
+		if (!validarDTO(dto)) return false;
+
+		try {
+			Tecnico tecnico = mapper.toTecnico(dto);
+			return registrarTecnico(tecnico);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public TecnicoDTO buscarTecnicoDTO(int id) {
+		if (id <= 0) return null;
+
+		return mapper.toTecnicoDTO(buscarTecnico(id));
+	}
+
+	public ListaEnlazada<TecnicoDTO> listarTecnicosDTO() {
+		return mapper.toTecnicoDTOList(listarTecnicos());
+	}
+
+	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorZonaDTO(String zona) {
+		if (zona == null || zona.trim().isEmpty()) return null;
+
+		return mapper.toTecnicoDTOList(buscarPorZona(zona));
+	}
+
+	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorEspecialidadDTO(String especialidad) {
+		if (especialidad == null || especialidad.trim().isEmpty()) return null;
+
+		return mapper.toTecnicoDTOList(buscarPorEspecialidad(especialidad));
+	}
+
+	public TecnicoDTO buscarTecnicoDisponibleDTO(String zona) {
+		if (zona == null || zona.trim().isEmpty()) return null;
+
+		return mapper.toTecnicoDTO(buscarDisponible(zona));
+	}
+
+	public boolean actualizarTecnicoDTO(TecnicoDTO dto) {
+		if (!validarDTO(dto)) return false;
+
+		try {
+			Tecnico tecnico = mapper.toTecnico(dto);
+			return actualizarTecnico(tecnico);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+
+	private boolean validarDTO(TecnicoDTO dto) {
+		return !(dto == null || dto.getId() <= 0 ||
+				dto.getNombre() == null || dto.getNombre().trim().isEmpty() ||
+				dto.getEspecialidad() == null || dto.getEspecialidad().trim().isEmpty() ||
+				dto.getEstado() == null || dto.getEstado().trim().isEmpty() ||
+				dto.getZona() == null || dto.getZona().trim().isEmpty());
 	}
 }

@@ -1,8 +1,7 @@
 package co.edu.unbosque.controller;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
-import co.edu.unbosque.model.tecnico.Tecnico;
-import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.tecnico.TecnicoDTO;
 import co.edu.unbosque.model.tecnico.TecnicoService;
 import co.edu.unbosque.view.IComandosVista;
 import co.edu.unbosque.view.VistaConsola;
@@ -29,104 +28,162 @@ public class ServicioControlador {
 
             switch (comando) {
 
-                case Constantes.BTN_ABRIR_DIALOGO_UNIDAD:
-                    vista.abrirDialogoUnidad();
+            case Constantes.BTN_ABRIR_DIALOGO_UNIDAD:
+                vista.abrirDialogoUnidad();
+                break;
+
+            case Constantes.BTN_UNIDAD_REGISTRAR:
+
+                TIPO_VEHICULO tipo = (TIPO_VEHICULO) vista.getDialogoUnidad().getTipo();
+                ESTADO_UNIDAD estado = (ESTADO_UNIDAD) vista.getDialogoUnidad().getEstado();
+                String zona = vista.getDialogoUnidad().getZona();
+
+                unidadServicio.registrarUnidad(tipo, estado, zona);
+
+                vista.getDialogoUnidad().mostrarMensaje("Unidad registrada");
+                vista.getDialogoUnidad().limpiarCampos();
+                break;
+
+            case Constantes.BTN_UNIDAD_BUSCAR:
+
+                String zonaBuscar = vista.getDialogoUnidad().getZona();
+
+                UnidadDTO u = unidadServicio.buscarDisponible(zonaBuscar);
+
+                if (u != null) {
+                    vista.getDialogoUnidad().mostrarMensaje(
+                        "Encontrada: " + u.getTipo() + " - " + u.getEstado()
+                    );
+                } else {
+                    vista.getDialogoUnidad().mostrarMensaje("No hay unidades disponibles");
+                }
+                break;
+
+            case Constantes.BTN_UNIDAD_LIMPIAR:
+                vista.getDialogoUnidad().limpiarCampos();
+                break;
+
+            case Constantes.BTN_UNIDAD_CERRAR:
+                vista.getDialogoUnidad().setVisible(false);
+                break;
+                    
+                case Constantes.BTN_ABRIR_DIALOGO_TECNICO:
+                    vista.abrirDialogoTecnico();
+                    break;
+                case Constantes.BTN_TECNICO_REGISTRAR:
+
+                    TecnicoDTO dto = new TecnicoDTO(
+                        vista.getDialogoTecnico().getId(),
+                        vista.getDialogoTecnico().getNombre(),
+                        vista.getDialogoTecnico().getEspecialidad(),
+                        vista.getDialogoTecnico().getEstado(),
+                        vista.getDialogoTecnico().getZona()
+                    );
+
+                    boolean registrado = registrarTecnico(dto);
+
+                    if (registrado) {
+                        vista.getDialogoTecnico().mostrarMensaje("Técnico registrado");
+                        vista.getDialogoTecnico().limpiarCampos();
+                    } else {
+                        vista.getDialogoTecnico().mostrarMensaje("Error al registrar");
+                    }
+                    break;
+                case Constantes.BTN_TECNICO_BUSCAR: {
+
+                    int id = vista.getDialogoTecnico().getId();
+                    String zonaTecnico = vista.getDialogoTecnico().getZona();
+                    String especialidad = vista.getDialogoTecnico().getEspecialidad();
+
+                    if (id > 0) {
+                        TecnicoDTO t = buscarTecnico(id);
+
+                        if (t != null) {
+                            String mensaje = "Técnico encontrado:\n" +
+                                    "ID: " + t.getId() + "\n" +
+                                    "Nombre: " + t.getNombre() + "\n" +
+                                    "Especialidad: " + t.getEspecialidad() + "\n" +
+                                    "Estado: " + t.getEstado() + "\n" +
+                                    "Zona: " + t.getZona();
+
+                            vista.getDialogoTecnico().mostrarMensaje(mensaje);
+                        } else {
+                            vista.getDialogoTecnico().mostrarMensaje("No encontrado");
+                        }
+
+                    } else if (zonaTecnico != null && !zonaTecnico.trim().isEmpty()) {
+
+                        ListaEnlazada<TecnicoDTO> lista = buscarTecnicosPorZona(zonaTecnico);
+
+                        if (lista != null && lista.count() > 0) {
+
+                            String mensaje = "Técnicos en la zona:\n";
+
+                            for (int i = 0; i < lista.count(); i++) {
+                                TecnicoDTO t = lista.getValueByPos(i);
+
+                                mensaje += "\nID: " + t.getId() +
+                                           " | " + t.getNombre() +
+                                           " | " + t.getEspecialidad() +
+                                           " | " + t.getEstado();
+                            }
+
+                            vista.getDialogoTecnico().mostrarMensaje(mensaje);
+
+                        } else {
+                            vista.getDialogoTecnico().mostrarMensaje("No hay técnicos en esa zona");
+                        }
+
+                    } else if (especialidad != null && !especialidad.trim().isEmpty()) {
+
+                        ListaEnlazada<TecnicoDTO> lista = buscarTecnicosPorEspecialidad(especialidad);
+
+                        if (lista != null && lista.count() > 0) {
+
+                            String mensaje = "Técnicos con esa especialidad:\n";
+
+                            for (int i = 0; i < lista.count(); i++) {
+                                TecnicoDTO t = lista.getValueByPos(i);
+
+                                mensaje += "\nID: " + t.getId() +
+                                           " | " + t.getNombre() +
+                                           " | " + t.getZona() +
+                                           " | " + t.getEstado();
+                            }
+
+                            vista.getDialogoTecnico().mostrarMensaje(mensaje);
+
+                        } else {
+                            vista.getDialogoTecnico().mostrarMensaje("No hay técnicos con esa especialidad");
+                        }
+
+                    } else if (zonaTecnico != null && !zonaTecnico.trim().isEmpty()) {
+
+                        TecnicoDTO t = buscarTecnicoDisponible(zonaTecnico);
+
+                        if (t != null) {
+                            String mensaje = "Técnico disponible:\n" +
+                                    "ID: " + t.getId() + "\n" +
+                                    "Nombre: " + t.getNombre() + "\n" +
+                                    "Especialidad: " + t.getEspecialidad();
+
+                            vista.getDialogoTecnico().mostrarMensaje(mensaje);
+                        } else {
+                            vista.getDialogoTecnico().mostrarMensaje("No hay técnicos disponibles");
+                        }
+
+                    } else {
+                        vista.getDialogoTecnico().mostrarMensaje("Ingrese un criterio de búsqueda");
+                    }
+
+                    break;
+                }
+                case Constantes.BTN_TECNICO_LIMPIAR:
+                    vista.getDialogoTecnico().limpiarCampos();
                     break;
 
-                case Constantes.BTN_UNIDAD_REGISTRAR:
-
-                    if (vista.getDialogoUnidad().datosValidos()) {
-
-						TIPO_VEHICULO tipo = vista.getDialogoUnidad().getTipo();
-						ESTADO_UNIDAD estado = vista.getDialogoUnidad().getEstado();
-						String zona = vista.getDialogoUnidad().getZona();
-
-						unidadServicio.registrarUnidad(tipo, estado, zona);
-
-						vista.getDialogoUnidad().mostrarMensaje("Unidad registrada correctamente");
-						vista.getDialogoUnidad().limpiarCampos();
-
-					} else {
-						vista.getDialogoUnidad().mostrarMensaje("Datos inválidos");
-					}
-					break;
-
-                case Constantes.BTN_UNIDAD_BUSCAR:
-
-					String zonaBuscar = vista.getDialogoUnidad().pedirZonaBusqueda();
-
-					if (zonaBuscar == null || zonaBuscar.trim().isEmpty()) {
-						vista.getDialogoUnidad().mostrarMensaje("Zona inválida");
-						break;
-					}
-
-					zonaBuscar = zonaBuscar.trim().toUpperCase();
-
-					ListaEnlazada<UnidadDTO> lista = unidadServicio.buscarDisponibles(zonaBuscar);
-
-					if (lista != null && lista.count() > 0) {
-
-						String mensaje = "Unidades encontradas:\n";
-
-						for (int i = 0; i < lista.count(); i++) {
-
-							UnidadDTO u = lista.getValueByPos(i);
-
-							mensaje += "\nID: " + u.getId() +
-									"\nTipo: " + u.getTipo() +
-									" | Estado: " + u.getEstado() +
-									" | Zona: " + u.getZona() + "\n";
-						}
-
-						vista.getDialogoUnidad().mostrarMensaje(mensaje);
-
-					} else {
-						vista.getDialogoUnidad().mostrarMensaje("No hay unidades en esa zona");
-					}
-
-				break;
-
-				case Constantes.BTN_UNIDAD_CAMBIAR_ESTADO:
-
-					Object[] datos = vista.getDialogoUnidad().pedirIdYEstado();
-
-					if (datos == null) {
-						break;
-					}
-
-					String idTexto = (String) datos[0];
-					ESTADO_UNIDAD nuevoEstado = (ESTADO_UNIDAD) datos[1];
-
-					if (idTexto.isEmpty()) {
-						vista.getDialogoUnidad().mostrarMensaje("ID inválido");
-						break;
-					}
-
-					try {
-
-						java.util.UUID id = java.util.UUID.fromString(idTexto);
-
-						boolean resultado = unidadServicio.cambiarEstado(id, nuevoEstado);
-
-						if (resultado) {
-							vista.getDialogoUnidad().mostrarMensaje("Estado actualizado correctamente");
-						} else {
-							vista.getDialogoUnidad().mostrarMensaje("No hubo cambios o no se encontró la unidad");
-						}
-
-					} catch (Exception e) {
-						vista.getDialogoUnidad().mostrarMensaje("Formato de ID inválido");
-					}
-
-				break;
-			
-
-                case Constantes.BTN_UNIDAD_LIMPIAR:
-                    vista.getDialogoUnidad().limpiarCampos();
-                    break;
-
-                case Constantes.BTN_UNIDAD_CERRAR:
-                    vista.getDialogoUnidad().setVisible(false);
+                case Constantes.BTN_TECNICO_CERRAR:
+                    vista.getDialogoTecnico().setVisible(false);
                     break;
             }
         }
@@ -145,77 +202,32 @@ public class ServicioControlador {
 
 	// =========================  METODOS DE TECNICO =========================
 
-	public boolean registrarTecnico(int id, String nombre, String especialidad, String estado, String zona) {
-		if (id <= 0 || nombre == null || nombre.trim().isEmpty()
-				|| especialidad == null || especialidad.trim().isEmpty()
-				|| estado == null || estado.trim().isEmpty()
-				|| zona == null || zona.trim().isEmpty()) {
-			return false;
-		}
-
-		try {
-			EstadoTecnico estadoTecnico = EstadoTecnico.valueOf(estado.toUpperCase());
-			Tecnico tecnico = new Tecnico(id, nombre, especialidad, estadoTecnico, zona);
-			return tecnicoService.registrarTecnico(tecnico);
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
+	public boolean registrarTecnico(TecnicoDTO dto) {
+	    return tecnicoService.registrarTecnicoDTO(dto);
 	}
 
-	public Tecnico buscarTecnico(int id) {
-		if (id <= 0) {
-			return null;
-		}
-		return tecnicoService.buscarTecnico(id);
+	public TecnicoDTO buscarTecnico(int id) {
+	    return tecnicoService.buscarTecnicoDTO(id);
 	}
 
-	public ListaEnlazada<Tecnico> listarTecnicos() {
-		return tecnicoService.listarTecnicos();
+	public ListaEnlazada<TecnicoDTO> listarTecnicos() {
+	    return tecnicoService.listarTecnicosDTO();
 	}
 
-	public ListaEnlazada<Tecnico> buscarTecnicosPorZona(String zona) {
-		if (zona == null || zona.trim().isEmpty()) {
-			return null;
-		}
-		return tecnicoService.buscarPorZona(zona);
+	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorZona(String zona) {
+	    return tecnicoService.buscarTecnicosPorZonaDTO(zona);
 	}
 
-	public ListaEnlazada<Tecnico> buscarTecnicosPorEspecialidad(String especialidad) {
-		if (especialidad == null || especialidad.trim().isEmpty()) {
-			return null;
-		}
-		return tecnicoService.buscarPorEspecialidad(especialidad);
+	public ListaEnlazada<TecnicoDTO> buscarTecnicosPorEspecialidad(String especialidad) {
+	    return tecnicoService.buscarTecnicosPorEspecialidadDTO(especialidad);
 	}
 
-	public Tecnico buscarTecnicoDisponible(String zona) {
-		if (zona == null || zona.trim().isEmpty()) {
-			return null;
-		}
-		return tecnicoService.buscarDisponible(zona);
+	public TecnicoDTO buscarTecnicoDisponible(String zona) {
+	    return tecnicoService.buscarTecnicoDisponibleDTO(zona);
 	}
 
-	public boolean cambiarEstadoTecnico(int id, String estado) {
-		if (id <= 0 || estado == null || estado.trim().isEmpty()) {
-			return false;
-		}
-		return tecnicoService.cambiarEstado(id, estado);
-	}
-
-	public boolean actualizarTecnico(int id, String nombre, String especialidad, String estado, String zona) {
-		if (id <= 0 || nombre == null || nombre.trim().isEmpty()
-				|| especialidad == null || especialidad.trim().isEmpty()
-				|| estado == null || estado.trim().isEmpty()
-				|| zona == null || zona.trim().isEmpty()) {
-			return false;
-		}
-
-		try {
-			EstadoTecnico estadoTecnico = EstadoTecnico.valueOf(estado.toUpperCase());
-			Tecnico tecnico = new Tecnico(id, nombre, especialidad, estadoTecnico, zona);
-			return tecnicoService.actualizarTecnico(tecnico);
-		} catch (IllegalArgumentException e) {
-			return false;
-		}
+	public boolean actualizarTecnico(TecnicoDTO dto) {
+	    return tecnicoService.actualizarTecnicoDTO(dto);
 	}
 
 	// =========================  METODOS DE SOLICITUD =========================
