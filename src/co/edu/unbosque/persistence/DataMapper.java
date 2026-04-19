@@ -83,7 +83,6 @@ public class DataMapper {
     }
 
 		
-	}
 
 	public String unidadToLine(Unidad unidad) {
 		if (unidad == null) {
