@@ -1,2 +1,3 @@
 123;ange;carga pesada;DISPONIBLE;suba
 1234;emi;vehículo;DISPONIBLE;02
+22;33;33;DISPONIBLE;12
