@@ -1,0 +1,2 @@
+123;david;1233;REGULAR;
+2211;cinthia;2342;REGULAR;
