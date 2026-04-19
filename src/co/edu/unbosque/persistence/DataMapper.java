@@ -321,7 +321,7 @@ public class DataMapper {
   		}
 
   		String[] parts = line.split(";");
-			Solicitud solicitud = new Solicitud(0, line, line, null, null);
+			Solicitud solicitud = new Solicitud(0, 0, line, line, null, null);
 			SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
 
   			solicitud.setClienteId(Integer.parseInt(parts[0]));
@@ -351,7 +351,7 @@ public class DataMapper {
 
            SimpleDateFormat sdf = new SimpleDateFormat(Constantes.DATE_FORMAT);
 			
-			Solicitud solicitud = new Solicitud(0, "", "", null, null);
+			Solicitud solicitud = new Solicitud(0, 0, "", "", null, null);
   			
 			solicitud.setClienteId(dto.getClienteId());
 			solicitud.setClienteTipo(TIPO_CLIENTE.valueOf(dto.getClienteTipo()));
