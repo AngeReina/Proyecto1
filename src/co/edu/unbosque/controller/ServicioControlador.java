@@ -1,6 +1,8 @@
 package co.edu.unbosque.controller;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.cliente.ClienteDTO;
+import co.edu.unbosque.model.cliente.ClienteService;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
 import co.edu.unbosque.model.tecnico.TecnicoService;
 import co.edu.unbosque.view.IComandosVista;
@@ -19,6 +21,7 @@ public class ServicioControlador {
     private UnidadServicio unidadServicio;
     private VistaConsola consoleView;
 	private TecnicoService tecnicoService;
+	private ClienteService clienteService;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 
@@ -184,6 +187,55 @@ public class ServicioControlador {
                 case Constantes.BTN_TECNICO_CERRAR:
                     vista.getDialogoTecnico().setVisible(false);
                     break;
+                    
+
+                case Constantes.BTN_ABRIR_DIALOGO_CLIENTE: {
+                    vista.abrirDialogoCliente();
+                    break;
+                }
+                    
+                case Constantes.BTN_CLIENTE_REGISTRAR: {
+                    ClienteDTO clienteDto = new ClienteDTO(
+                            vista.getDialogoCliente().getId(),
+                            vista.getDialogoCliente().getNombre(),
+                            vista.getDialogoCliente().getTelefono(),
+                            vista.getDialogoCliente().getTipo()
+                    );
+
+                    boolean clienteRegistrado = registrarCliente(clienteDto);
+
+                    if (clienteRegistrado) {
+                        vista.getDialogoTecnico().mostrarMensaje("Cliente registrado");
+                        vista.getDialogoTecnico().limpiarCampos();
+                    } else {
+                        vista.getDialogoTecnico().mostrarMensaje("Error al registrar");
+                    }
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_BUSCAR: {
+                    int id = vista.getDialogoCliente().getId();
+                    ClienteDTO t = buscarCliente(id);
+
+                    if (t != null) {
+                        String mensaje = "Cliente encontrado:\n" +
+                                "ID: " + t.getId() + "\n" +
+                                "Nombre: " + t.getNombre() + "\n" +
+                                "Telefono: " + t.getTelefono() + "\n" +
+                                "Tipo: " + t.getTipo();
+
+                        vista.getDialogoCliente().mostrarMensaje(mensaje);
+                    } else {
+                        vista.getDialogoCliente().mostrarMensaje("No encontrado");
+                    }
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_LIMPIAR: {
+                	vista.getDialogoCliente().limpiarCampos();
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_CERRAR:
+                    vista.getDialogoCliente().setVisible(false);
+                    break;
             }
         }
 	};
@@ -193,10 +245,12 @@ public class ServicioControlador {
         vista = new VistaPrincipal(viewCmdListener);
         this.consoleView = new VistaConsola();
 		this.tecnicoService = new TecnicoService();
+		this.clienteService = new ClienteService();
 	}
 
 	public void init() {
 		consoleView.printMessage("--INIT VIEW--");
+		vista.abrirVista();
 	}
 
 	// =========================  METODOS DE TECNICO =========================
@@ -228,8 +282,18 @@ public class ServicioControlador {
 	public boolean actualizarTecnico(TecnicoDTO dto) {
 	    return tecnicoService.actualizarTecnicoDTO(dto);
 	}
+	
+	// =========================  METODOS DE CLIENTES =========================
+	
+	public boolean registrarCliente(ClienteDTO dto) {
+	    return clienteService.registrarCliente(dto);
+	}
 
-	// =========================  METODOS DE SOLICITUD =========================
+	public ClienteDTO buscarCliente(int id) {
+	    return clienteService.buscarCliente(id);
+	}
+
+	// =========================  METODOS DE SOLICITUD ========================
 
 	// =========================  METODOS DE REPORTES =========================
 }

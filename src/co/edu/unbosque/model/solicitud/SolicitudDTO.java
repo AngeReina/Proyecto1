@@ -3,7 +3,7 @@ package co.edu.unbosque.model.solicitud;
 public class SolicitudDTO {
 	
     private String id;
-    private String clienteid;
+    private int clienteid;
     private String descripcionIncidente;
     private String ubicacion;
     private String tipo;
@@ -21,10 +21,10 @@ public class SolicitudDTO {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getClienteid() {
+	public int getClienteid() {
 		return clienteid;
 	}
-	public void setClienteid(String clienteid) {
+	public void setClienteid(int clienteid) {
 		this.clienteid = clienteid;
 	}
 	public String getDescripcionIncidente() {

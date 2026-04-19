@@ -1,7 +1,10 @@
 package co.edu.unbosque.persistence;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.cliente.Cliente;
+import co.edu.unbosque.model.cliente.ClienteDTO;
 import co.edu.unbosque.model.enums.EstadoTecnico;
+import co.edu.unbosque.model.enums.TIPO_CLIENTE;
 import co.edu.unbosque.model.solicitud.SolicitudDTO;
 import co.edu.unbosque.model.tecnico.Tecnico;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
@@ -79,6 +82,78 @@ public class DataMapper {
 
         return dtoList;
     }
+    
+    //CLIENTE ----------------------------------------------------------------------------------------------------------------
+    
+	public String clienteToLine(Cliente cliente) {
+		if (cliente == null) {
+			return null;
+		}
+
+		return cliente.getId() + ";" +
+		cliente.getNombre() + ";" +
+		cliente.getTelefono() + ";" +
+		cliente.getTipo().name() + ";";
+	}
+
+	public Cliente lineToCliente(String line) {
+		if (line == null || line.trim().isEmpty()) {
+			return null;
+		}
+
+		String[] parts = line.split(";");
+
+		if (parts.length != 4) {
+			return null;
+		}
+
+		try {
+			int id = Integer.parseInt(parts[0]);
+			String nombre = parts[1];
+			String telefono = parts[2];
+			TIPO_CLIENTE tipo = TIPO_CLIENTE.valueOf(parts[3]);
+
+			return new Cliente(id, nombre, telefono, tipo);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	public Cliente toCliente(ClienteDTO dto) {
+        if (dto == null) return null;
+
+        return new Cliente(
+                dto.getId(),
+                dto.getNombre(),
+                dto.getTelefono(),
+                TIPO_CLIENTE.valueOf(dto.getTipo()));
+    }
+
+    public ClienteDTO toClienteDTO(Cliente c) {
+        if (c == null) return null;
+
+        return new ClienteDTO(
+                c.getId(),
+                c.getNombre(),
+                c.getTelefono(),
+                c.getTipo().name()
+        );
+    }
+
+    public ListaEnlazada<ClienteDTO> toClienteDTOList(ListaEnlazada<Cliente> lista) {
+        ListaEnlazada<ClienteDTO> dtoList = new ListaEnlazada<>();
+
+        for (int i = 0; i < lista.count(); i++) {
+        	Cliente t = lista.getValueByPos(i);
+            if (t != null) {
+                dtoList.add(toClienteDTO(t));
+            }
+        }
+
+        return dtoList;
+    }
+    
+    
+    //SOLICITUD ---------------------------------------------------------------------------------------------------------------
     
 	public String solicitudDtoToLine(SolicitudDTO dto) {
 		if (dto == null) {

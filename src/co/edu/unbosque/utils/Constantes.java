@@ -17,5 +17,13 @@ public class Constantes {
     public static final String BTN_TECNICO_BUSCAR = "tecnico_buscar";
     public static final String BTN_TECNICO_LIMPIAR = "tecnico_limpiar";
     public static final String BTN_TECNICO_CERRAR = "tecnico_cerrar";
+    
+    // ---- CLIENTE ----
+    
+    public static final String BTN_ABRIR_DIALOGO_CLIENTE = "abrir_dialogo_cliente";
+    public static final String BTN_CLIENTE_REGISTRAR = "cliente_registrar";
+    public static final String BTN_CLIENTE_BUSCAR = "cliente_buscar";
+    public static final String BTN_CLIENTE_LIMPIAR = "cliente_limpiar";
+    public static final String BTN_CLIENTE_CERRAR = "cliente_cerrar";
 
 }
