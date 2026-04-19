@@ -1,6 +1,8 @@
 package co.edu.unbosque.controller;
 
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.cliente.ClienteDTO;
+import co.edu.unbosque.model.cliente.ClienteService;
 import co.edu.unbosque.model.tecnico.TecnicoDTO;
 import co.edu.unbosque.model.tecnico.TecnicoService;
 import co.edu.unbosque.view.IComandosVista;
@@ -8,6 +10,13 @@ import co.edu.unbosque.view.VistaConsola;
 import co.edu.unbosque.view.VistaPrincipal;
 import co.edu.unbosque.utils.Constantes;
 import co.edu.unbosque.model.enums.TIPO_VEHICULO;
+import co.edu.unbosque.model.enums.TipoSolicitud;
+import co.edu.unbosque.model.kit.KitDTO;
+import co.edu.unbosque.model.kit.KitService;
+import co.edu.unbosque.model.reports.ReporteDTO;
+import co.edu.unbosque.model.reports.ReporteService;
+import co.edu.unbosque.model.solicitud.SolicitudDTO;
+import co.edu.unbosque.model.solicitud.SolicitudServicio;
 import co.edu.unbosque.model.enums.ESTADO_UNIDAD;
 import co.edu.unbosque.model.unidad.UnidadDTO;
 import co.edu.unbosque.model.unidad.UnidadServicio;
@@ -20,6 +29,13 @@ public class ServicioControlador {
     private VistaConsola consoleView;
 	private TecnicoService tecnicoService;
 	private UnidadDTO ultimaUnidad;
+	private ClienteService clienteService;
+	private KitService kitService;
+	private SolicitudServicio solicitudServicio;
+	private SolicitudDTO solicitudActual;
+	private KitDTO kitEnUso;
+	
+	ReporteService reporteService;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 
@@ -182,6 +198,151 @@ public class ServicioControlador {
                 case Constantes.BTN_TECNICO_CERRAR:
                     vista.getDialogoTecnico().setVisible(false);
                     break;
+
+
+                case Constantes.BTN_ABRIR_DIALOGO_CLIENTE: {
+                    vista.abrirDialogoCliente();
+                    break;
+                }
+
+                case Constantes.BTN_CLIENTE_REGISTRAR: {
+                    ClienteDTO clienteDto = new ClienteDTO(
+                            vista.getDialogoCliente().getId(),
+                            vista.getDialogoCliente().getNombre(),
+                            vista.getDialogoCliente().getTelefono(),
+                            vista.getDialogoCliente().getTipo()
+                    );
+
+                    boolean clienteRegistrado = registrarCliente(clienteDto);
+
+                    if (clienteRegistrado) {
+                        vista.getDialogoTecnico().mostrarMensaje("Cliente registrado");
+                        vista.getDialogoTecnico().limpiarCampos();
+                    } else {
+                        vista.getDialogoTecnico().mostrarMensaje("Error al registrar");
+                    }
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_BUSCAR: {
+                    int id = vista.getDialogoCliente().getId();
+                    ClienteDTO t = buscarCliente(id);
+
+                    if (t != null) {
+                        String mensaje = "Cliente encontrado:\n" +
+                                "ID: " + t.getId() + "\n" +
+                                "Nombre: " + t.getNombre() + "\n" +
+                                "Telefono: " + t.getTelefono() + "\n" +
+                                "Tipo: " + t.getTipo();
+
+                        vista.getDialogoCliente().mostrarMensaje(mensaje);
+                    } else {
+                        vista.getDialogoCliente().mostrarMensaje("No encontrado");
+                    }
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_LIMPIAR: {
+                	vista.getDialogoCliente().limpiarCampos();
+                    break;
+                }
+                case Constantes.BTN_CLIENTE_CERRAR:
+                    vista.getDialogoCliente().setVisible(false);
+                    break;
+                    
+                case Constantes.BTN_ABRIR_DIALOGO_KITS: {
+                    vista.abrirDialogoKit();
+                    break;
+                }
+                case Constantes.BTN_KITS_REGISTRAR: {
+                	KitDTO kitDto = new KitDTO();
+                	kitDto.setTipo(vista.getDialogoKit().getTipo());
+
+                    boolean kitRegistrado = registrarKit(kitDto);
+
+                    if (kitRegistrado) {
+                        vista.getDialogoKit().mostrarMensaje("Kit registrado");
+                        vista.getDialogoKit().limpiarCampos();
+                    } else {
+                        vista.getDialogoKit().mostrarMensaje("Error al registrar");
+                    }
+                    break;
+                }
+                case Constantes.BTN_KITS_REVISAR: {
+                	revisarKit();
+                    break;
+                }
+                case Constantes.BTN_KIT_LIMPIAR: {
+                	vista.getDialogoKit().limpiarCampos();
+                    break;
+                }
+                case Constantes.BTN_KIT_CERRAR: {
+                	vista.getDialogoKit().setVisible(false);
+                    break;
+                }
+                
+                case Constantes.BTN_ABRIR_DIALOGO_SOLICITUD: {
+                    vista.abrirDialogoSolicitud();
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_REGISTRAR: {
+                	SolicitudDTO solicitudDTO = new SolicitudDTO();
+                	
+                	ClienteDTO solicitante = clienteService.buscarCliente(vista.getDialogoSolicitud().getClienteId());
+                	
+                	if (solicitante != null) {
+                    	
+                    	solicitudDTO.setClienteId(vista.getDialogoSolicitud().getClienteId());
+                    	solicitudDTO.setUbicacion(vista.getDialogoSolicitud().getUbicacion());
+                    	solicitudDTO.setDescripcionIncidente(vista.getDialogoSolicitud().getDescripcion());
+                    	solicitudDTO.setClienteTipo(solicitante.getTipo());
+                    	solicitudDTO.setCriterioCriticidad(vista.getDialogoSolicitud().getTipo());
+                    	
+                    	solicitudServicio.registrarSolicitud(solicitudDTO);	
+                	} else {
+                		vista.getDialogoSolicitud().mostrarMensaje("No existe usuario para solicitud");
+                	}
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_ASIGNAR: {                
+                	SolicitudDTO solicitudAsignable = solicitudServicio.obtenerProximaAtencion();                
+                	
+                	if (solicitudAsignable != null) {
+                    	UnidadDTO unidadDisponible = unidadServicio.buscarDisponible(solicitudAsignable.getUbicacion());
+                    	TecnicoDTO tecnicoDisponible = tecnicoService.buscarTecnicoDisponibleDTO(solicitudAsignable.getUbicacion());
+                    	
+                    	solicitudActual = solicitudServicio.asignarProximaSolicitud(unidadDisponible.getId(), tecnicoDisponible.getId());
+                    	kitEnUso = kitService.retirarKit();
+                		vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	} else {
+                		vista.getDialogoSolicitud().mostrarMensaje("No hay solicitudes pendientes");
+                	}
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_COMPLETAR: {                
+                	solicitudServicio.marcarComoAtendida(solicitudActual); 
+                	kitService.devolverKit(kitEnUso);
+                	vista.getDialogoSolicitud().mostrarMensaje("Solicitud asignada");
+                	
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_REPORTE: {                
+                	SolicitudDTO[] data = solicitudServicio.listarHistorialAtendidas();
+                	ReporteDTO reporteDTO = new ReporteDTO();
+                	reporteDTO.setSolicitudes(data);
+                	reporteService.generarReporteSolicitudes(reporteDTO);
+                	vista.getDialogoSolicitud().mostrarMensaje("Reporte generado en csv");
+                    break;
+                }
+                
+                case Constantes.BTN_SOLICITUD_CERRAR: {
+                	vista.getDialogoSolicitud().setVisible(false);
+                    break;
+                }
             }
         }
 	};
@@ -191,10 +352,17 @@ public class ServicioControlador {
         vista = new VistaPrincipal(viewCmdListener);
         this.consoleView = new VistaConsola();
 		this.tecnicoService = new TecnicoService();
+		this.clienteService = new ClienteService();
+		this.kitService = new KitService();
+		this.solicitudServicio = new SolicitudServicio();
+		this.reporteService = new ReporteService();
 	}
 
 	public void init() {
 		consoleView.printMessage("--INIT VIEW--");
+		kitService.init();
+		solicitudServicio.init();
+		vista.abrirVista();
 	}
 
 	// =========================  METODOS DE TECNICO =========================
@@ -227,7 +395,31 @@ public class ServicioControlador {
 	    return tecnicoService.actualizarTecnicoDTO(dto);
 	}
 
-	// =========================  METODOS DE SOLICITUD =========================
+	// =========================  METODOS DE CLIENTES =========================
 
-	// =========================  METODOS DE REPORTES =========================
+	public boolean registrarCliente(ClienteDTO dto) {
+	    return clienteService.registrarCliente(dto);
+	}
+
+	public ClienteDTO buscarCliente(int id) {
+	    return clienteService.buscarCliente(id);
+	}
+	
+	// =========================  METODOS DE KITS ========================
+	
+	public boolean registrarKit(KitDTO dto) {
+	    return kitService.agregarKit(dto);
+	}
+	
+	public boolean devolverKit(KitDTO dto) {
+	    return kitService.devolverKit(dto);
+	}
+	
+	public boolean revisarKit() {
+	    return kitService.revisarKit();
+	}
+	
+	public KitDTO retirarKit() {
+	    return kitService.retirarKit();
+	}
 }

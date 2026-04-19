@@ -1,12 +1,14 @@
 package co.edu.unbosque.model.cliente;
 
+import co.edu.unbosque.model.enums.TIPO_CLIENTE;
+
 public class Cliente {
-    private String id;
+    private int id;
     private String nombre;
     private String telefono;
-    private String tipo; // "PARTICULAR", "EMPRESA", "ASEGURADORA"
+    private TIPO_CLIENTE tipo; // "PARTICULAR", "EMPRESA", "ASEGURADORA"
 
-    public Cliente(String id, String nombre, String telefono, String tipo) {
+    public Cliente(int id, String nombre, String telefono, TIPO_CLIENTE tipo) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
@@ -14,11 +16,11 @@ public class Cliente {
     }
 
     // Getters y Setters
-    public String getId() { return id; }
+    public int getId() { return id; }
     public String getNombre() { return nombre; }
     public String getTelefono() { return telefono; }
-    public String getTipo() { return tipo; }
+    public TIPO_CLIENTE getTipo() { return tipo; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setTipo(TIPO_CLIENTE tipo) { this.tipo = tipo; }
 }

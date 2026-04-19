@@ -39,7 +39,7 @@ public class PanelBotonesTecnico extends JPanel {
         add(btnCerrar);
     }
 
-    public void setListener(ActionListener listener) {
+	public void setListener(ActionListener listener) {
         btnRegistrar.addActionListener(listener);
         btnBuscar.addActionListener(listener);
         btnLimpiar.addActionListener(listener);

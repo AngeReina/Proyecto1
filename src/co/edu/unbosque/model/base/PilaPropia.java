@@ -7,7 +7,11 @@ public class PilaPropia<T> {
 	public PilaPropia() {}
 	
 	public T peek() {
-		return top.getData();
+		if (top != null) {
+			return top.getData();	
+		} 
+		
+		return null;
 	}
 	
 	public void push(T data) {

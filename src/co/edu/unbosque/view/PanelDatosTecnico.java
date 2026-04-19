@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import co.edu.unbosque.model.enums.EstadoTecnico;
-import co.edu.unbosque.model.enums.ZonaTecnico;
+import co.edu.unbosque.model.enums.Zona;
 
 public class PanelDatosTecnico extends JPanel {
 
@@ -12,7 +12,7 @@ public class PanelDatosTecnico extends JPanel {
     private JTextField txtNombre;
     private JTextField txtEspecialidad;
     private JComboBox<EstadoTecnico> comboEstado;
-    private JComboBox<ZonaTecnico> comboZona;
+    private JComboBox<Zona> comboZona;
 
     public PanelDatosTecnico() {
         setLayout(new GridLayout(5, 2, 10, 10));
@@ -27,7 +27,7 @@ public class PanelDatosTecnico extends JPanel {
         txtNombre = new JTextField();
         txtEspecialidad = new JTextField();
         comboEstado = new JComboBox<>(EstadoTecnico.values());
-        comboZona = new JComboBox<>(ZonaTecnico.values());
+        comboZona = new JComboBox<>(Zona.values());
     }
 
     private void addComponents() {

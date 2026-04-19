@@ -1,12 +1,12 @@
 package co.edu.unbosque.model.cliente;
 
 public class ClienteDTO {
-    private String id;
+    private int id;
     private String nombre;
     private String telefono;
     private String tipo; // "PARTICULAR", "EMPRESA", "ASEGURADORA"
 
-    public ClienteDTO(String id, String nombre, String telefono, String tipo) {
+    public ClienteDTO(int id, String nombre, String telefono, String tipo) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
@@ -14,7 +14,7 @@ public class ClienteDTO {
     }
 
     // Getters y Setters
-    public String getId() { return id; }
+    public int getId() { return id; }
     public String getNombre() { return nombre; }
     public String getTelefono() { return telefono; }
     public String getTipo() { return tipo; }

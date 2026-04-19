@@ -1,53 +1,121 @@
 package co.edu.unbosque.model.solicitud;
 
+
+import java.util.UUID;
+
 import co.edu.unbosque.model.base.ColaPrioridadPropia;
 import co.edu.unbosque.model.base.ListaEnlazada;
+import co.edu.unbosque.model.enums.CriterioCriticidad;
+import co.edu.unbosque.model.enums.EstadoSolicitud;
+import co.edu.unbosque.model.enums.TIPO_CLIENTE;
 import co.edu.unbosque.model.enums.TipoSolicitud;
+import co.edu.unbosque.model.kit.Kit;
+import co.edu.unbosque.persistence.DataMapper;
+import co.edu.unbosque.persistence.SolicitudDAO;
 
 public class SolicitudServicio {
 	
-	private static int INDEX_PRIORITARIO = 0;
-	private static int INDEX_NORMAL = 1;
+	private static final int INDEX_PRIORITARIO = 0;
+	private static final int INDEX_NORMAL = 1;
+	private static final UUID UUID_DEFAULT = UUID.randomUUID();
 
+	private DataMapper mapper;
     private ColaPrioridadPropia<Solicitud> colaPrioridadPropia;
     private ListaEnlazada<Solicitud> historicoAtendidas;
     private ListaEnlazada<Solicitud> todasLasSolicitudes;
+    
+    private SolicitudDAO dao;
 
     public SolicitudServicio() {
+    	this.dao = new SolicitudDAO();
+    	this.mapper = new DataMapper();
     	colaPrioridadPropia = new ColaPrioridadPropia<>(2);
     	colaPrioridadPropia.createPriority(INDEX_PRIORITARIO);
     	colaPrioridadPropia.createPriority(INDEX_NORMAL);
     	
         historicoAtendidas = new ListaEnlazada<>();
-        todasLasSolicitudes = new ListaEnlazada<>();
+    }
+    
+    public void init() {
+    	ListaEnlazada<Solicitud> list = dao.getAll();
+    	int count = list.count();
+    	for (int i = count-1; i >= 0; i--) {
+    		Solicitud s = list.getValueByPos(i);
+    		if (s.getEstado().equals(EstadoSolicitud.PENDIENTE)) {
+        		if (s.getTipo().equals(TipoSolicitud.CRITICA)) {
+        			colaPrioridadPropia.queueByPriority(INDEX_PRIORITARIO, s);
+        		} else {
+        			colaPrioridadPropia.queueByPriority(INDEX_NORMAL, s);
+        		}	
+    		} else if (s.getEstado().equals(EstadoSolicitud.ATENDIDA)) {
+    			historicoAtendidas.add(s);
+    		}
+    	}
     }
 
-    public void registrarSolicitud(Solicitud solicitud) {
-        todasLasSolicitudes.add(solicitud);
+    public void registrarSolicitud(SolicitudDTO dto) {
         int prioridad = INDEX_NORMAL;
         
-        if (solicitud.getTipo() == TipoSolicitud.CRITICA) {
+        dto.setTipo(TipoSolicitud.ORDINARIA.name());
+        dto.setEstado(EstadoSolicitud.PENDIENTE.name());
+        dto.setUnidadId(UUID_DEFAULT);
+        
+        Solicitud solicitud = mapper.toSolicitud(dto);
+        
+        
+        if (solicitud.getClienteTipo() == TIPO_CLIENTE.PREMIUN || solicitud.getCriterioCriticidad() != CriterioCriticidad.NORMAL) {
+        	solicitud.setTipo(TipoSolicitud.CRITICA);
             prioridad = INDEX_PRIORITARIO;
         }
         
+        colaPrioridadPropia.queueByPriority(prioridad, solicitud);
+        
+        dao.create(solicitud);
+        
     }
 
-    public Solicitud obtenerProximaAtencion() {
+    public SolicitudDTO obtenerProximaAtencion() {
     	int prioridad = INDEX_NORMAL;
     	
-    	if (colaPrioridadPropia.isEmptyByPriority(INDEX_PRIORITARIO)) {
+    	if (!colaPrioridadPropia.isEmptyByPriority(INDEX_PRIORITARIO)) {
     		prioridad = INDEX_PRIORITARIO;
     	}
     	
     	Solicitud res = colaPrioridadPropia.getBeginByPriority(prioridad);
         colaPrioridadPropia.dequeueByPriority(prioridad);
-
-        return res;
+        
+        if (res == null) {
+        	return null;
+        } else {
+        	 return mapper.toSolicitudDTO(res);
+        }
+    }
+    
+    public SolicitudDTO asignarProximaSolicitud(UUID unidadID, int tecnicoCode) {
+    	int prioridad = INDEX_NORMAL;
+    	
+    	if (!colaPrioridadPropia.isEmptyByPriority(INDEX_PRIORITARIO)) {
+    		prioridad = INDEX_PRIORITARIO;
+    	}
+    	
+    	Solicitud res = colaPrioridadPropia.getBeginByPriority(prioridad);
+        colaPrioridadPropia.dequeueByPriority(prioridad);
+        
+        if (res == null) {
+        	return null;
+        } else {
+            res.asignarRecursos(unidadID, tecnicoCode);
+            dao.update(res);
+            
+            return mapper.toSolicitudDTO(res);
+        }
     }
 
-    public void marcarComoAtendida(Solicitud solicitud) {
+    public void marcarComoAtendida(SolicitudDTO dto) {
+    	Solicitud solicitud = mapper.toSolicitud(dto);
         solicitud.marcarAtendida();
         historicoAtendidas.add(solicitud);
+        dao.update(solicitud);
     }
 
     // Reporte
@@ -58,19 +126,10 @@ public class SolicitudServicio {
     	
     	for (int i = 0; i < tamanio; i++) {
     		Solicitud s = historicoAtendidas.getValueByPos(i);
-    		SolicitudDTO dto = new SolicitudDTO();
-    		dto.setClienteid(s.getCliente().getId());
-    		dto.setCriterioCriticidad(s.getCriterioCriticidad().name());
-    		dto.setDescripcionIncidente(s.getDescripcionIncidente());
-    		dto.setEstado(s.getEstado().name());
-    		dto.setFechaAsignacion(s.getFechaAsignacionStr());
-    		dto.setFechaAtencion(s.getFechaAtencionStr());
-    		dto.setFechaCreacion(s.getFechaCreacionStr());
-    		res[i] = dto;
+    		res[i] = mapper.toSolicitudDTO(s);
     	}
     	
     	return res;
     }
-
 
 }

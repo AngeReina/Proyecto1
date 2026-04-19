@@ -1,9 +1,12 @@
 package co.edu.unbosque.model.solicitud;
 
+import java.util.UUID;
+
 public class SolicitudDTO {
 	
-    private String id;
-    private String clienteid;
+    private int id;
+    private int clienteId;
+    private String clienteTipo;
     private String descripcionIncidente;
     private String ubicacion;
     private String tipo;
@@ -12,20 +15,26 @@ public class SolicitudDTO {
     private String fechaCreacion;
     private String fechaAsignacion;
     private String fechaAtencion;
-    private String tecnicoAsignado;
+    private int tecnicoAsignado;
+    private UUID unidadId;
     
-    
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	public String getClienteid() {
-		return clienteid;
+	public int getClienteId() {
+		return clienteId;
 	}
-	public void setClienteid(String clienteid) {
-		this.clienteid = clienteid;
+	public void setClienteId(int clienteId) {
+		this.clienteId = clienteId;
+	}
+	public String getClienteTipo() {
+		return clienteTipo;
+	}
+	public void setClienteTipo(String clienteTipo) {
+		this.clienteTipo = clienteTipo;
 	}
 	public String getDescripcionIncidente() {
 		return descripcionIncidente;
@@ -75,13 +84,19 @@ public class SolicitudDTO {
 	public void setFechaAtencion(String fechaAtencion) {
 		this.fechaAtencion = fechaAtencion;
 	}
-	public String getTecnicoAsignado() {
+	public int getTecnicoAsignado() {
 		return tecnicoAsignado;
 	}
-	public void setTecnicoAsignado(String tecnicoAsignado) {
+	public void setTecnicoAsignado(int tecnicoAsignado) {
 		this.tecnicoAsignado = tecnicoAsignado;
 	}
-    
-    
+	
+	public void setUnidadId(UUID unidadId) {
+		this.unidadId = unidadId;
+	}
+	
+	public UUID getUnidadId() {
+		return unidadId;
+	}
 
 }

@@ -81,6 +81,7 @@ public abstract class AbstractFileDAO<T, ID> implements IDAO<T, ID> {
 
 	@Override
 	public ListaEnlazada<T> getAll() {
+		loadFromFile();
 		return lista;
 	}
 
@@ -107,14 +108,14 @@ public abstract class AbstractFileDAO<T, ID> implements IDAO<T, ID> {
 				}
 			}
 		} catch (IOException e) {
-			System.out.println("Error al cargar archivo: " + e.getMessage());
+			//System.out.println("Error al cargar archivo: " + e.getMessage());
 		} finally {
 			try {
 				if (br != null) {
 					br.close();
 				}
 			} catch (IOException e) {
-				System.out.println("Error al cerrar lector: " + e.getMessage());
+				//System.out.println("Error al cerrar lector: " + e.getMessage());
 			}
 		}
 	}
@@ -138,15 +139,26 @@ public abstract class AbstractFileDAO<T, ID> implements IDAO<T, ID> {
 				bw.newLine();
 			}
 		} catch (IOException e) {
-			System.out.println("Error al guardar archivo: " + e.getMessage());
+			//System.out.println("Error al guardar archivo: " + e.getMessage());
 		} finally {
 			try {
 				if (bw != null) {
 					bw.close();
 				}
 			} catch (IOException e) {
-				System.out.println("Error al cerrar escritor: " + e.getMessage());
+				//System.out.println("Error al cerrar escritor: " + e.getMessage());
 			}
+		}
+	}
+	
+	@Override
+	public void deleteFile() {
+		File file = new File(filePath);
+
+		if (file.getParentFile() != null && !file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		} else {
+			file.delete();
 		}
 	}
 }
