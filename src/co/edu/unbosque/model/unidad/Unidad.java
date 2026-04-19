@@ -11,14 +11,12 @@ public class Unidad {
     private TIPO_VEHICULO tipo;
     private ESTADO_UNIDAD estado;
     private String zona;
-    private boolean disponible;
 
-    public Unidad(UUID id, TIPO_VEHICULO tipo, ESTADO_UNIDAD estado, String zona, boolean disponible) {
+    public Unidad(UUID id, TIPO_VEHICULO tipo, ESTADO_UNIDAD estado, String zona) {
         this.id = id;
         this.tipo = tipo;
         this.estado = estado;
         this.zona = zona;
-        this.disponible = disponible;
     }
 
     public UUID getId() {
@@ -37,15 +35,24 @@ public class Unidad {
         return zona;
     }
 
+    // La disponibilidad depende del estado
     public boolean isDisponible() {
-        return disponible;
+        return estado == ESTADO_UNIDAD.DISPONIBLE;
     }
 
-    public void setEstado(ESTADO_UNIDAD estado) {
-        this.estado = estado;
-    }
+    // Método controlado para cambiar estado
+    public void cambiarEstado(ESTADO_UNIDAD nuevoEstado) {
 
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
+        if (nuevoEstado == null) {
+            return;
+        }
+
+        // Regla: si está en mantenimiento, solo puede pasar a disponible
+        if (this.estado == ESTADO_UNIDAD.MANTENIMIENTO &&
+            nuevoEstado != ESTADO_UNIDAD.DISPONIBLE) {
+            return;
+        }
+
+        this.estado = nuevoEstado;
     }
 }

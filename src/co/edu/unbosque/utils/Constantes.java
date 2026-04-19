@@ -10,5 +10,6 @@ public class Constantes {
     public static final String BTN_UNIDAD_BUSCAR = "buscar_unidad";
     public static final String BTN_UNIDAD_LIMPIAR = "limpiar_unidad";
     public static final String BTN_UNIDAD_CERRAR = "cerrar_unidad";
+    public static final String BTN_UNIDAD_CAMBIAR_ESTADO = "cambiar_estado_unidad";
 
 }

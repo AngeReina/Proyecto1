@@ -13,6 +13,7 @@ public class PanelBotonesUnidad extends JPanel {
     private JButton btnBuscar;
     private JButton btnLimpiar;
     private JButton btnCerrar;
+    private JButton btnCambiarEstado;
 
     public PanelBotonesUnidad() {
         setLayout(new GridLayout(1, 4, 10, 10));
@@ -26,15 +27,19 @@ public class PanelBotonesUnidad extends JPanel {
         btnBuscar = new JButton("Buscar");
         btnLimpiar = new JButton("Limpiar");
         btnCerrar = new JButton("Cerrar");
+        btnCambiarEstado = new JButton("Cambiar Estado");
+
 
         // ---- ACTION COMMANDS ----
         btnRegistrar.setActionCommand(Constantes.BTN_UNIDAD_REGISTRAR);
         btnBuscar.setActionCommand(Constantes.BTN_UNIDAD_BUSCAR);
         btnLimpiar.setActionCommand(Constantes.BTN_UNIDAD_LIMPIAR);
         btnCerrar.setActionCommand(Constantes.BTN_UNIDAD_CERRAR);
+        btnCambiarEstado.setActionCommand(Constantes.BTN_UNIDAD_CAMBIAR_ESTADO);
     }
 
     private void addComponents() {
+        add(btnCambiarEstado);
         add(btnRegistrar);
         add(btnBuscar);
         add(btnLimpiar);
@@ -47,5 +52,6 @@ public class PanelBotonesUnidad extends JPanel {
         btnBuscar.addActionListener(listener);
         btnLimpiar.addActionListener(listener);
         btnCerrar.addActionListener(listener);
+        btnCambiarEstado.addActionListener(listener);
     }
 }

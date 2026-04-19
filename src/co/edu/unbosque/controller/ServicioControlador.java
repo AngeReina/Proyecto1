@@ -20,6 +20,7 @@ public class ServicioControlador {
     private UnidadServicio unidadServicio;
     private VistaConsola consoleView;
 	private TecnicoService tecnicoService;
+	private UnidadDTO ultimaUnidad;
 
 	private IComandosVista viewCmdListener = new IComandosVista() {
 
@@ -34,30 +35,91 @@ public class ServicioControlador {
 
                 case Constantes.BTN_UNIDAD_REGISTRAR:
 
-                    TIPO_VEHICULO tipo = (TIPO_VEHICULO) vista.getDialogoUnidad().getTipo();
-                    ESTADO_UNIDAD estado = (ESTADO_UNIDAD) vista.getDialogoUnidad().getEstado();
-                    String zona = vista.getDialogoUnidad().getZona();
+                    if (vista.getDialogoUnidad().datosValidos()) {
 
-                    unidadServicio.registrarUnidad(tipo, estado, zona);
+						TIPO_VEHICULO tipo = vista.getDialogoUnidad().getTipo();
+						ESTADO_UNIDAD estado = vista.getDialogoUnidad().getEstado();
+						String zona = vista.getDialogoUnidad().getZona();
 
-                    vista.getDialogoUnidad().mostrarMensaje("Unidad registrada");
-                    vista.getDialogoUnidad().limpiarCampos();
-                    break;
+						unidadServicio.registrarUnidad(tipo, estado, zona);
+
+						vista.getDialogoUnidad().mostrarMensaje("Unidad registrada correctamente");
+						vista.getDialogoUnidad().limpiarCampos();
+
+					} else {
+						vista.getDialogoUnidad().mostrarMensaje("Datos inválidos");
+					}
+					break;
 
                 case Constantes.BTN_UNIDAD_BUSCAR:
 
-                    String zonaBuscar = vista.getDialogoUnidad().getZona();
+					String zonaBuscar = vista.getDialogoUnidad().pedirZonaBusqueda();
 
-                    UnidadDTO u = unidadServicio.buscarDisponible(zonaBuscar);
+					if (zonaBuscar == null || zonaBuscar.trim().isEmpty()) {
+						vista.getDialogoUnidad().mostrarMensaje("Zona inválida");
+						break;
+					}
 
-                    if (u != null) {
-                        vista.getDialogoUnidad().mostrarMensaje(
-                                "Encontrada: " + u.getTipo() + " - " + u.getEstado()
-                        );
-                    } else {
-                        vista.getDialogoUnidad().mostrarMensaje("No hay unidades disponibles");
-                    }
-                    break;
+					zonaBuscar = zonaBuscar.trim().toUpperCase();
+
+					ListaEnlazada<UnidadDTO> lista = unidadServicio.buscarDisponibles(zonaBuscar);
+
+					if (lista != null && lista.count() > 0) {
+
+						String mensaje = "Unidades encontradas:\n";
+
+						for (int i = 0; i < lista.count(); i++) {
+
+							UnidadDTO u = lista.getValueByPos(i);
+
+							mensaje += "\nID: " + u.getId() +
+									"\nTipo: " + u.getTipo() +
+									" | Estado: " + u.getEstado() +
+									" | Zona: " + u.getZona() + "\n";
+						}
+
+						vista.getDialogoUnidad().mostrarMensaje(mensaje);
+
+					} else {
+						vista.getDialogoUnidad().mostrarMensaje("No hay unidades en esa zona");
+					}
+
+				break;
+
+				case Constantes.BTN_UNIDAD_CAMBIAR_ESTADO:
+
+					Object[] datos = vista.getDialogoUnidad().pedirIdYEstado();
+
+					if (datos == null) {
+						break;
+					}
+
+					String idTexto = (String) datos[0];
+					ESTADO_UNIDAD nuevoEstado = (ESTADO_UNIDAD) datos[1];
+
+					if (idTexto.isEmpty()) {
+						vista.getDialogoUnidad().mostrarMensaje("ID inválido");
+						break;
+					}
+
+					try {
+
+						java.util.UUID id = java.util.UUID.fromString(idTexto);
+
+						boolean resultado = unidadServicio.cambiarEstado(id, nuevoEstado);
+
+						if (resultado) {
+							vista.getDialogoUnidad().mostrarMensaje("Estado actualizado correctamente");
+						} else {
+							vista.getDialogoUnidad().mostrarMensaje("No hubo cambios o no se encontró la unidad");
+						}
+
+					} catch (Exception e) {
+						vista.getDialogoUnidad().mostrarMensaje("Formato de ID inválido");
+					}
+
+				break;
+			
 
                 case Constantes.BTN_UNIDAD_LIMPIAR:
                     vista.getDialogoUnidad().limpiarCampos();
